@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'createJoinGame.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/createGame' : (context) => CreateGamePage(),
         '/joinGame' : (context) => JoinGamePage(),
+        '/gameLobby' : (context) => GameLobbyPage(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/gameLobby');
               },
               child: Text('Submit'),
             ),
@@ -78,7 +79,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/gameLobby');
               },
               child: Text('Submit'),
             ),
@@ -87,4 +88,64 @@ class _JoinGamePageState extends State<JoinGamePage> {
       ),
     );
   }
+}
+
+class GameLobbyPage extends StatefulWidget {
+  @override
+  _GameLobbyPageState createState() => _GameLobbyPageState();
+}
+
+class _GameLobbyPageState extends State<GameLobbyPage> {
+  Future<bool> apiSuccess;
+
+  Future<bool> fetchPost() async {
+    final response = await http.get('https://x0ldh7067a.execute-api.us-west-2.amazonaws.com/stage');
+    if (response.statusCode == 200) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.apiSuccess = fetchPost();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Game Lobby"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FutureBuilder<bool> (
+              future: apiSuccess,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.toString());
+                }
+                else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+              child: Text('Return Home'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }
