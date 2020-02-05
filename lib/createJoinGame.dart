@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -22,6 +23,9 @@ class _CreateGamePageState extends State<CreateGamePage> {
           children: <Widget>[
             TextField(
               controller: playerName,
+              onSubmitted: (String value) {
+                playerName = value;
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -30,7 +34,16 @@ class _CreateGamePageState extends State<CreateGamePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/gameLobby');
+                if (playerName == null) {
+                  Fluttertoast.showToast(
+                    msg: "You must enter a name",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                }
+                else {
+                  Navigator.pushReplacementNamed(context, '/gameLobby');
+                }
               },
               child: Text('Submit'),
             ),
@@ -63,6 +76,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
           children: <Widget>[
             TextField(
               controller: gameCode,
+              onSubmitted: (String value) {
+                gameCode = value;
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -71,6 +87,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
             ),
             TextField(
               controller: playerName,
+              onSubmitted: (String value) {
+                playerName = value;
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
@@ -79,7 +98,30 @@ class _JoinGamePageState extends State<JoinGamePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/gameLobby');
+                if (playerName == null && gameCode == null) {
+                  Fluttertoast.showToast(
+                    msg: "You must enter a name and game code",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                }
+                else if (playerName == null) {
+                  Fluttertoast.showToast(
+                    msg: "You must enter a name",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                }
+                else if (gameCode == null) {
+                  Fluttertoast.showToast(
+                    msg: "You must enter a game code",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                }
+                else {
+                  Navigator.pushReplacementNamed(context, '/gameLobby');
+                }
               },
               child: Text('Submit'),
             ),
