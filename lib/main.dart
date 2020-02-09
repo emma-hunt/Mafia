@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'createJoinGame.dart';
+import 'gameLobby.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -14,10 +15,27 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       home: WelcomePage(title: 'Mafia: Evolved'),
-      routes: {
-        '/createGame' : (context) => CreateGamePage(),
-        '/joinGame' : (context) => JoinGamePage(),
-        '/gameLobby' : (context) => GameLobbyPage(),
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Magia:Evolved'));
+            break;
+          case '/createGame':
+            return MaterialPageRoute(builder: (context) => CreateGamePage());
+            break;
+          case '/joinGame':
+            return MaterialPageRoute(builder: (context) => JoinGamePage());
+            break;
+          case '/creatorGameLobby':
+            final CreateGameArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => CreatorGameLobbyPage(args: arguments));
+            break;
+          case '/joinerGameLobby':
+            return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage());
+            break;
+          default:
+            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Magia:Evolved'));
+        }
       },
     );
   }

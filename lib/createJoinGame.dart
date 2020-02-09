@@ -23,13 +23,14 @@ class _CreateGamePageState extends State<CreateGamePage> {
           children: <Widget>[
             TextField(
               controller: playerName,
-              onSubmitted: (String value) {
+              onChanged: (String value) {
                 playerName = value;
               },
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  hintText: 'Your Name'
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                hintText: 'Your Name',
+                labelText: 'Name',
               ),
             ),
             RaisedButton(
@@ -42,7 +43,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/gameLobby');
+                  Navigator.pushReplacementNamed(context, '/creatorGameLobby', arguments: CreateGameArguments(playerName));
                 }
               },
               child: Text('Submit'),
@@ -52,6 +53,12 @@ class _CreateGamePageState extends State<CreateGamePage> {
       )
     );
   }
+}
+
+class CreateGameArguments{
+  final String playerName;
+
+  CreateGameArguments(this.playerName);
 }
 
 class JoinGamePage extends StatefulWidget {
@@ -76,24 +83,26 @@ class _JoinGamePageState extends State<JoinGamePage> {
           children: <Widget>[
             TextField(
               controller: gameCode,
-              onSubmitted: (String value) {
+              onChanged: (String value) {
                 gameCode = value;
               },
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  hintText: 'Game Code'
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                hintText: '5 character code',
+                labelText: 'Game Code',
               ),
             ),
             TextField(
               controller: playerName,
-              onSubmitted: (String value) {
+              onChanged: (String value) {
                 playerName = value;
               },
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  hintText: 'Your Name'
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                hintText: 'Your Name',
+                labelText: 'Name',
               ),
             ),
             RaisedButton(
@@ -120,7 +129,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/gameLobby');
+                  Navigator.pushReplacementNamed(context, '/joinerGameLobby');
                 }
               },
               child: Text('Submit'),
@@ -130,64 +139,4 @@ class _JoinGamePageState extends State<JoinGamePage> {
       ),
     );
   }
-}
-
-class GameLobbyPage extends StatefulWidget {
-  @override
-  _GameLobbyPageState createState() => _GameLobbyPageState();
-}
-
-class _GameLobbyPageState extends State<GameLobbyPage> {
-  Future<bool> apiSuccess;
-
-  Future<bool> fetchPost() async {
-    final response = await http.get('https://x0ldh7067a.execute-api.us-west-2.amazonaws.com/stage');
-    if (response.statusCode == 200) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this.apiSuccess = fetchPost();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Game Lobby"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder<bool> (
-              future: apiSuccess,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data.toString());
-                }
-                else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return CircularProgressIndicator();
-              },
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Return Home'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
 }
