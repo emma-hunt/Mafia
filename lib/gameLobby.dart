@@ -93,6 +93,10 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 }
 
 class JoinerGameLobbyPage extends StatefulWidget {
+  final JoinGameArguments args;
+
+  JoinerGameLobbyPage({this.args});
+
   @override
   _JoinerGameLobbyPageState createState() => _JoinerGameLobbyPageState();
 }

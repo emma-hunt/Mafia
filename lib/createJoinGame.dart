@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
+class CreateGameArguments{
+  final String playerName;
+
+  CreateGameArguments(this.playerName);
+}
+
 class CreateGamePage extends StatefulWidget {
   @override
   _CreateGamePageState createState() => _CreateGamePageState();
@@ -17,12 +23,11 @@ class _CreateGamePageState extends State<CreateGamePage> {
       appBar: AppBar(
         title: Text("Create Game"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: playerName,
+      body: ListView(
+        padding: const EdgeInsets.all(8),
+        children: <Widget>[
+          Container(
+            child: TextField(
               onChanged: (String value) {
                 playerName = value;
               },
@@ -33,7 +38,9 @@ class _CreateGamePageState extends State<CreateGamePage> {
                 labelText: 'Name',
               ),
             ),
-            RaisedButton(
+          ),
+          Container (
+            child: RaisedButton(
               onPressed: () {
                 if (playerName == null) {
                   Fluttertoast.showToast(
@@ -48,17 +55,18 @@ class _CreateGamePageState extends State<CreateGamePage> {
               },
               child: Text('Submit'),
             ),
-          ],
-        ),
-      )
+          )
+        ],
+      ),
     );
   }
 }
 
-class CreateGameArguments{
+class JoinGameArguments {
   final String playerName;
+  final String gameCode;
 
-  CreateGameArguments(this.playerName);
+  JoinGameArguments(this.playerName, this.gameCode);
 }
 
 class JoinGamePage extends StatefulWidget {
@@ -77,12 +85,11 @@ class _JoinGamePageState extends State<JoinGamePage> {
       appBar: AppBar(
         title: Text("Join Game"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: gameCode,
+      body: ListView(
+        padding: const EdgeInsets.all(8),
+        children: <Widget>[
+          Container (
+            child: TextField(
               onChanged: (String value) {
                 gameCode = value;
               },
@@ -93,8 +100,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
                 labelText: 'Game Code',
               ),
             ),
-            TextField(
-              controller: playerName,
+          ),
+          Container (
+            child: TextField(
               onChanged: (String value) {
                 playerName = value;
               },
@@ -105,7 +113,9 @@ class _JoinGamePageState extends State<JoinGamePage> {
                 labelText: 'Name',
               ),
             ),
-            RaisedButton(
+          ),
+          Container (
+            child: RaisedButton(
               onPressed: () {
                 if (playerName == null && gameCode == null) {
                   Fluttertoast.showToast(
@@ -129,13 +139,13 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/joinerGameLobby');
+                  Navigator.pushReplacementNamed(context, '/joinerGameLobby', arguments: JoinGameArguments(playerName, gameCode));
                 }
               },
               child: Text('Submit'),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

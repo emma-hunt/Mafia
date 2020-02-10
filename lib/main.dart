@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/':
-            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Magia:Evolved'));
+            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
             break;
           case '/createGame':
             return MaterialPageRoute(builder: (context) => CreateGamePage());
@@ -31,10 +31,11 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => CreatorGameLobbyPage(args: arguments));
             break;
           case '/joinerGameLobby':
-            return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage());
+            final JoinGameArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
             break;
           default:
-            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Magia:Evolved'));
+            return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
         }
       },
     );
