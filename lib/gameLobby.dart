@@ -34,7 +34,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Future<CreateGameResponse> createGameResponse;
 
   Future<CreateGameResponse> fetchPost() async {
-    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/:' + widget.args.playerName);
+    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + widget.args.playerName);
     if (response.statusCode == 200) {
       print(response.statusCode);
       print(response.body.toString());
