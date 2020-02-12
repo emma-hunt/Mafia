@@ -9,14 +9,16 @@ class CreateGameResponse {
   final String hostName;
   final String hostID;
   final String gameID;
+  final String message;
 
-  CreateGameResponse({this.hostName, this.hostID, this.gameID});
+  CreateGameResponse({this.hostName, this.hostID, this.gameID, this.message});
 
   factory CreateGameResponse.fromJson(Map<String, dynamic> json) {
     return CreateGameResponse(
       hostName: json['hostName'],
       hostID: json['hostId'],
       gameID: json['gameId'],
+      message: json['message']
     );
   }
 }
@@ -39,9 +41,15 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
       print(response.statusCode);
       print(response.body.toString());
       CreateGameResponse createGameResponse = CreateGameResponse.fromJson(json.decode(response.body));
-      print(createGameResponse.gameID);
-      print(createGameResponse.hostName);
-      return createGameResponse;
+      if(createGameResponse.message == null) {
+        print(createGameResponse.gameID);
+        print(createGameResponse.hostName);
+        print(createGameResponse.message);
+        return createGameResponse;
+      }
+      else {
+        throw Exception(createGameResponse.message);
+      }
     }
     else {
       print(response.statusCode);
@@ -92,6 +100,22 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
 }
 
+class JoinGameResponse {
+  final String playerName;
+  final String gameID;
+  final String playerID;
+
+  JoinGameResponse( {this.playerName, this. playerID, this.gameID});
+
+  factory JoinGameResponse.fromJson(Map<String, dynamic> json) {
+    return JoinGameResponse (
+      playerName: json['playerName'],
+      playerID: json['playerId'],
+      gameID: json['gameId'],
+    );
+  }
+}
+
 class JoinerGameLobbyPage extends StatefulWidget {
   final JoinGameArguments args;
 
@@ -102,22 +126,28 @@ class JoinerGameLobbyPage extends StatefulWidget {
 }
 
 class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
-  Future<bool> apiSuccess;
+  Future<JoinGameResponse> joinGameResponse;
 
-  Future<bool> fetchPost() async {
-    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev');
+  Future<JoinGameResponse> fetchPost() async {
+    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/join/' + widget.args.gameCode + '/' + widget.args.playerName);
     if (response.statusCode == 200) {
-      return true;
+      print(response.body.toString());
+      JoinGameResponse joinResponse = JoinGameResponse.fromJson(json.decode(response.body));
+      print(joinResponse.gameID);
+      print(joinResponse.playerName);
+      return joinResponse;
     }
     else {
-      return false;
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception('Unable to join game');
     }
   }
 
   @override
   void initState() {
     super.initState();
-    this.apiSuccess = fetchPost();
+    this.joinGameResponse = fetchPost();
   }
 
   @override
@@ -130,11 +160,16 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FutureBuilder<bool> (
-              future: apiSuccess,
+            FutureBuilder<JoinGameResponse> (
+              future: joinGameResponse,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text(snapshot.data.toString());
+                  return Column(
+                    children: <Widget>[
+                      Text("Game ID: " + snapshot.data.gameID.toString()),
+                      Text("Player name: " + snapshot.data.playerName.toString()),
+                    ]
+                  );
                 }
                 else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
