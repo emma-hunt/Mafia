@@ -7,17 +7,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 
 class CreateGameResponse {
-  final String hostName;
-  final String hostID;
+  final String playerName;
+  final String playerID;
   final String gameID;
   final String message;
 
-  CreateGameResponse({this.hostName, this.hostID, this.gameID, this.message});
+  CreateGameResponse({this.playerName, this.playerID, this.gameID, this.message});
 
   factory CreateGameResponse.fromJson(Map<String, dynamic> json) {
     return CreateGameResponse(
-      hostName: json['hostName'],
-      hostID: json['hostId'],
+      playerName: json['hostName'],
+      playerID: json['hostId'],
       gameID: json['gameId'],
       message: json['message']
     );
@@ -45,11 +45,30 @@ class CreatorGameLobbyPage extends StatefulWidget {
   CreatorGameLobbyPage({this.args});
 
   @override
+  void deactivate() {
+    print("IN DEACTIVATE");
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    print("IN DISPOSE");
+    if(timer != null) {
+      timer.cancel();
+    }
+    timer = null;
+  }
+
+  @override
   _CreatorGameLobbyPageState createState() => _CreatorGameLobbyPageState();
 }
 
 class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Future<CreateGameResponse> createGameResponse;
+  Future<LobbyStateResponse> lobbyStateResponse;
 
   Future<CreateGameResponse> _fetchCreateGame() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + widget.args.playerName);
@@ -82,20 +101,17 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
   }
 
+  void _pollLobbyState(String gameID) async {
+    setState(() {
+      this.lobbyStateResponse = _checkLobbyState(gameID);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     createGameResponse = _fetchCreateGame();
 
-  }
-
-  @override
-  void deactivate() {
-    if(widget.timer != null) {
-      widget.timer.cancel();
-      widget.timer = null;
-    }
-    super.deactivate();
   }
 
   @override
@@ -110,22 +126,74 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
           children: <Widget>[
             FutureBuilder<CreateGameResponse> (
               future: createGameResponse,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  widget.timer = Timer.periodic(Duration(seconds: 2), (_) => _checkLobbyState(snapshot.data.gameID));
-                  return Text("Game ID: " + snapshot.data.gameID.toString());
+              builder: (context, createGameSnapshot) {
+                if (createGameSnapshot.hasData) {
+                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(createGameSnapshot.data.gameID));
+                  return Container (
+                    constraints: BoxConstraints(
+                        maxHeight: 300.0,
+                        maxWidth: 200.0,
+                        minWidth: 150.0,
+                        minHeight: 150.0
+                    ),
+                    child: Column(
+                        children: <Widget>[
+                          Text("Game ID: " + createGameSnapshot.data.gameID.toString()),
+                          Text("\nPlayers: "),
+                          FutureBuilder<LobbyStateResponse> (
+                            future: lobbyStateResponse,
+                            builder: (context, lobbyStateSnapshot) {
+                              if (lobbyStateSnapshot.hasData) {
+                                return Flexible (
+                                  fit: FlexFit.loose,
+                                  child: ListView.builder(
+                                      padding: const EdgeInsets.all(8),
+                                      itemCount: lobbyStateSnapshot.data.playerList.length,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Center(
+                                          child: Text(lobbyStateSnapshot.data.playerList[index]),
+                                        );
+                                      }
+                                  ),
+                                );
+                              }
+                              else {
+                                return Flexible (
+                                    fit: FlexFit.loose,
+                                    child: Center(
+                                      child: Text(createGameSnapshot.data.playerName),
+                                    )
+                                );
+                              }
+                            },
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              widget.timer.cancel();
+                              widget.timer = null;
+                              Navigator.pushReplacementNamed(context, '/');
+                            },
+                            child: Text('Return Home'),
+                          ),
+                        ]
+                    ),
+                  );
                 }
-                else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
+                else if (createGameSnapshot.hasError) {
+                  return Column (
+                    children: <Widget>[
+                      Text("${createGameSnapshot.error}"),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/');
+                        },
+                        child: Text('Try Again'),
+                      ),
+                    ],
+                  );
                 }
                 return CircularProgressIndicator();
               },
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Return Home'),
             ),
           ],
         ),
@@ -153,6 +221,7 @@ class JoinGameResponse {
 
 class JoinerGameLobbyPage extends StatefulWidget {
   final JoinGameArguments args;
+  Timer timer;
 
   JoinerGameLobbyPage({this.args});
 
@@ -162,8 +231,9 @@ class JoinerGameLobbyPage extends StatefulWidget {
 
 class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
   Future<JoinGameResponse> joinGameResponse;
+  Future<LobbyStateResponse> lobbyStateResponse;
 
-  Future<JoinGameResponse> fetchPost() async {
+  Future<JoinGameResponse> _fetchJoinGame() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/join/' + widget.args.gameCode + '/' + widget.args.playerName);
     if (response.statusCode == 200) {
       print(response.body.toString());
@@ -179,10 +249,52 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     }
   }
 
+  Future<LobbyStateResponse> _checkLobbyState(String gameID) async {
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + gameID);
+    if (response.statusCode == 200) {
+      print(response.body);
+      LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
+      print(lobbyState.playerList);
+      return lobbyState;
+    }
+    else {
+      print("failure in lobby polling");
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Unable to get Lobby State');
+    }
+  }
+
+  void _pollLobbyState(String gameID) async {
+    setState(() {
+      this.lobbyStateResponse = _checkLobbyState(gameID);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    this.joinGameResponse = fetchPost();
+    this.joinGameResponse = _fetchJoinGame();
+  }
+
+  @override
+  void deactivate() {
+    print("IN DEACTIVATE");
+    if(widget.timer != null) {
+      widget.timer.cancel();
+      widget.timer = null;
+    }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print("IN DISPOSE");
+    if(widget.timer != null) {
+      widget.timer.cancel();
+    }
+    widget.timer = null;
+    super.dispose();
   }
 
   @override
@@ -197,30 +309,68 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
           children: <Widget>[
             FutureBuilder<JoinGameResponse> (
               future: joinGameResponse,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: <Widget>[
-                      Text("Game ID: " + snapshot.data.gameID.toString()),
-                      Text("Player name: " + snapshot.data.playerName.toString()),
-                      RaisedButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/');
-                        },
-                        child: Text('Return Home'),
-                      ),
-                    ]
+              builder: (context, joinGameSnapshot) {
+                if (joinGameSnapshot.hasData) {
+                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(joinGameSnapshot.data.gameID));
+                  return Container (
+                    constraints: BoxConstraints(
+                        maxHeight: 300.0,
+                        maxWidth: 200.0,
+                        minWidth: 150.0,
+                        minHeight: 150.0
+                    ),
+                    child: Column(
+                        children: <Widget>[
+                          Text("Game ID: " + joinGameSnapshot.data.gameID.toString()),
+                          Text("\nPlayers: "),
+                          FutureBuilder<LobbyStateResponse> (
+                            future: lobbyStateResponse,
+                            builder: (context, lobbyStateSnapshot) {
+                              if (lobbyStateSnapshot.hasData) {
+                                return Flexible (
+                                  fit: FlexFit.loose,
+                                  child: ListView.builder(
+                                      padding: const EdgeInsets.all(8),
+                                      itemCount: lobbyStateSnapshot.data.playerList.length,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Center(
+                                          child: Text(lobbyStateSnapshot.data.playerList[index]),
+                                        );
+                                      }
+                                  ),
+                                );
+                              }
+                              else {
+                                return Flexible (
+                                  fit: FlexFit.loose,
+                                  child: Center(
+                                    child: Text(joinGameSnapshot.data.playerName),
+                                  )
+                                );
+                              }
+                            },
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              widget.timer.cancel();
+                              widget.timer = null;
+                              Navigator.pushReplacementNamed(context, '/');
+                            },
+                            child: Text('Return Home'),
+                          ),
+                        ]
+                    ),
                   );
                 }
-                else if (snapshot.hasError) {
+                else if (joinGameSnapshot.hasError) {
                   return Column (
                     children: <Widget>[
-                      Text("${snapshot.error}"),
+                      Text("${joinGameSnapshot.error}"),
                       RaisedButton(
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, '/');
                         },
-                        child: Text('Return Home'),
+                        child: Text('Try Again'),
                       ),
                     ],
                   );
