@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -23,8 +24,23 @@ class CreateGameResponse {
   }
 }
 
+class LobbyStateResponse {
+  final bool isGameStarted;
+  final List<dynamic> playerList;
+
+  LobbyStateResponse({this.isGameStarted, this.playerList});
+
+  factory LobbyStateResponse.fromJson(Map<String, dynamic> json) {
+    return LobbyStateResponse(
+      isGameStarted: json['hasStarted'],
+      playerList: json['playerNames']
+    );
+  }
+}
+
 class CreatorGameLobbyPage extends StatefulWidget {
   final CreateGameArguments args;
+  Timer timer;
 
   CreatorGameLobbyPage({this.args});
 
@@ -35,21 +51,13 @@ class CreatorGameLobbyPage extends StatefulWidget {
 class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Future<CreateGameResponse> createGameResponse;
 
-  Future<CreateGameResponse> fetchPost() async {
+  Future<CreateGameResponse> _fetchCreateGame() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + widget.args.playerName);
     if (response.statusCode == 200) {
       print(response.statusCode);
       print(response.body.toString());
       CreateGameResponse createGameResponse = CreateGameResponse.fromJson(json.decode(response.body));
-      if(createGameResponse.message == null) {
-        print(createGameResponse.gameID);
-        print(createGameResponse.hostName);
-        print(createGameResponse.message);
-        return createGameResponse;
-      }
-      else {
-        throw Exception(createGameResponse.message);
-      }
+      return createGameResponse;
     }
     else {
       print(response.statusCode);
@@ -58,10 +66,36 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
   }
 
+  Future<LobbyStateResponse> _checkLobbyState(String gameID) async {
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + gameID);
+    if (response.statusCode == 200) {
+      print(response.body);
+      LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
+      print(lobbyState.playerList);
+      return lobbyState;
+    }
+    else {
+      print("failure in lobby polling");
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Unable to get Lobby State');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    createGameResponse = fetchPost();
+    createGameResponse = _fetchCreateGame();
+
+  }
+
+  @override
+  void deactivate() {
+    if(widget.timer != null) {
+      widget.timer.cancel();
+      widget.timer = null;
+    }
+    super.deactivate();
   }
 
   @override
@@ -78,6 +112,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
               future: createGameResponse,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  widget.timer = Timer.periodic(Duration(seconds: 2), (_) => _checkLobbyState(snapshot.data.gameID));
                   return Text("Game ID: " + snapshot.data.gameID.toString());
                 }
                 else if (snapshot.hasError) {
@@ -168,20 +203,30 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
                     children: <Widget>[
                       Text("Game ID: " + snapshot.data.gameID.toString()),
                       Text("Player name: " + snapshot.data.playerName.toString()),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/');
+                        },
+                        child: Text('Return Home'),
+                      ),
                     ]
                   );
                 }
                 else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
+                  return Column (
+                    children: <Widget>[
+                      Text("${snapshot.error}"),
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/');
+                        },
+                        child: Text('Return Home'),
+                      ),
+                    ],
+                  );
                 }
                 return CircularProgressIndicator();
               },
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Return Home'),
             ),
           ],
         ),
