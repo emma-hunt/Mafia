@@ -84,6 +84,11 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
               },
               child: Text('Return Home'),
             ),
+            RaisedButton(onPressed: (){
+              Navigator.pushReplacementNamed(context, '/yourRolePage');
+            },
+              child: Text('Go to your role'),
+            )
           ],
         ),
       ),

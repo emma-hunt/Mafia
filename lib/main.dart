@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mafia_app/YourRolePage.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
+import 'YourRolePage.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
           case '/joinerGameLobby':
             final JoinGameArguments arguments = settings.arguments;
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
+            break;
+          case '/yourRolePage':
+            return MaterialPageRoute(builder: (context) => YourRolePage());
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
