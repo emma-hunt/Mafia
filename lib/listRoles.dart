@@ -21,33 +21,42 @@ class _ListRoles extends State<ListRoles> {
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    child: RaisedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/yourRolePage');
-                      },
-                      child: Text('Your Role'),
-                    ),
-                  ),
-                  Container(
-                    child: RaisedButton(
-                      onPressed: () {
-                        // Does nothing: stay on the same page
-                        //Navigator.pushReplacementNamed(context, '/listRoles');
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Container(
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, '/yourRolePage');
                         },
-                      child: Text('Roles'),
+                        child: Text('Your Role'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ]
-          ),
-        )
-    );
+                    Container(
+                      child: RaisedButton(
+                        onPressed: () {
+                          // Does nothing: stay on the same page
+                          //Navigator.pushReplacementNamed(context, '/listRoles');
+                        },
+                        child: Text('Roles'),
+                      ),
+                    ),
+                  ],
+                ),
+                RaisedButton(
+                  onPressed: () {
+                    Fluttertoast.showToast(
+                      msg: "take you to next screen",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                  },
+                  child: Text('sleep...'),
+                  //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
+                )
+              ]),
+        ));
   }
 }
-            

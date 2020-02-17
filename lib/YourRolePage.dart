@@ -21,7 +21,7 @@ class _YourRolePage extends State<YourRolePage> {
         ),
         body: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
@@ -72,6 +72,7 @@ class _YourRolePage extends State<YourRolePage> {
                   gravity: ToastGravity.BOTTOM,
                 );
               },
+              child: Text('sleep...'),
               //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
             )
           ],
