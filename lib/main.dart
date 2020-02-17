@@ -3,6 +3,7 @@ import 'package:mafia_app/YourRolePage.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'YourRolePage.dart';
+import 'ListRoles.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -39,6 +40,8 @@ class MyApp extends StatelessWidget {
           case '/yourRolePage':
             return MaterialPageRoute(builder: (context) => YourRolePage());
             break;
+          case '/listRoles':
+            return MaterialPageRoute(builder: (context) => ListRoles());
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
         }

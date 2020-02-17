@@ -11,6 +11,8 @@ class YourRolePage extends StatefulWidget {
 }
 
 class _YourRolePage extends State<YourRolePage> {
+  var playerRole;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +23,27 @@ class _YourRolePage extends State<YourRolePage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Row(
+              children: <Widget>[
+                Container(
+                  child: RaisedButton(
+                    onPressed: () {
+                      // Does nothing, stay on the same page
+                      //Navigator.pushReplacementNamed(context, '/yourRolePage');
+                    },
+                    child: Text('Your Role'),
+                  ),
+                ),
+                Container(
+                  child: RaisedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/listRoles');
+                      },
+                    child: Text('Roles'),
+                  ),
+                ),
+              ],
+            ),
             Container(
               child: Text(
                 'You are the:',
@@ -31,12 +54,16 @@ class _YourRolePage extends State<YourRolePage> {
             Expanded(
               child: Container(
                 alignment: Alignment(0.0, 0.0),
-                child: Text("THE ROLE", 
-                style: TextStyle(fontSize: 20.0),),
+                child: Text(
+                  "THE ROLE",
+                  style: TextStyle(fontSize: 20.0),
+                ),
               ),
             ),
-            Text("ROLE DESCIRPTION", 
-                style: TextStyle(fontSize: 20.0),),
+            Text(
+              "ROLE DESCIRPTION",
+              style: TextStyle(fontSize: 20.0),
+            ),
             RaisedButton(
               onPressed: () {
                 Fluttertoast.showToast(
@@ -45,7 +72,7 @@ class _YourRolePage extends State<YourRolePage> {
                   gravity: ToastGravity.BOTTOM,
                 );
               },
-             //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
+              //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
             )
           ],
         )));
