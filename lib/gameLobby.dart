@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 
 class CreateGameResponse {
@@ -147,6 +147,32 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
                 Navigator.pushReplacementNamed(context, '/');
               },
               child: Text('Return Home'),
+            ),
+            RaisedButton(
+              onPressed: () {
+
+                Future<bool> leaveGame() async {
+                  final response = await http.delete('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/leave/' + widget.args.gameCode + '/' + widget.args.playerName);
+                  if (response.statusCode == 200) {
+                    print(response.statusCode);
+                    print(response.body.toString());
+                    return true;
+                  }
+                  else {
+                    print(response.statusCode);
+                    print(response.body.toString());
+                    throw Exception('Unable to leave game');
+                  }
+                }
+
+                Future<bool> leaveGameFuture = leaveGame();
+                print("here");
+                leaveGameFuture.whenComplete(() => {
+//                  print("when complete called");
+//                  Navigator.pushReplacementNamed(context, '/');
+                });
+              },
+              child: Text('Leave Lobby'),
             ),
           ],
         ),
