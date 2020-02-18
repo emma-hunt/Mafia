@@ -38,10 +38,10 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
             break;
           case '/yourRolePage':
-            return MaterialPageRoute(builder: (context) => YourRolePage());
+            return MaterialPageRoute(builder: (context) => YourRolePage(args: arguments));
             break;
           case '/listRoles':
-            return MaterialPageRoute(builder: (context) => ListRoles());
+            return MaterialPageRoute(builder: (context) => ListRoles(args: arguments));
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
         }

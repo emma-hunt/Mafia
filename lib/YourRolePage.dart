@@ -11,7 +11,7 @@ class YourRolePage extends StatefulWidget {
 }
 
 class _YourRolePage extends State<YourRolePage> {
-  var playerRole;
+  var playerRole = "the role";
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _YourRolePage extends State<YourRolePage> {
               child: Container(
                 alignment: Alignment(0.0, 0.0),
                 child: Text(
-                  "THE ROLE",
+                  this.playerRole,
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),

@@ -11,7 +11,6 @@ class ListRoles extends StatefulWidget {
 }
 
 class _ListRoles extends State<ListRoles> {
-  var playerRole;
 
   @override
   Widget build(BuildContext context) {
