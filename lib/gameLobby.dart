@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 class CreateGameResponse {
   final String hostName;
@@ -92,6 +94,20 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
 }
 
+void leaveGame(BuildContext context, String gameCode, String playerName) async {
+  final response = await http.delete('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/leave/' + gameCode + '/' + playerName);
+  if (response.statusCode == 200) {
+    print("leaveGame: " + response.statusCode.toString());
+    print(response.body.toString());
+    Navigator.pushReplacementNamed(context, '/');
+  }
+  else {
+    print(response.statusCode);
+    print(response.body.toString());
+    throw Exception('Unable to leave game');
+  }
+}
+
 class JoinerGameLobbyPage extends StatefulWidget {
   final JoinGameArguments args;
 
@@ -150,27 +166,12 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
             ),
             RaisedButton(
               onPressed: () {
-
-                Future<bool> leaveGame() async {
-                  final response = await http.delete('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/leave/' + widget.args.gameCode + '/' + widget.args.playerName);
-                  if (response.statusCode == 200) {
-                    print(response.statusCode);
-                    print(response.body.toString());
-                    return true;
-                  }
-                  else {
-                    print(response.statusCode);
-                    print(response.body.toString());
-                    throw Exception('Unable to leave game');
-                  }
-                }
-
-                Future<bool> leaveGameFuture = leaveGame();
-                print("here");
-                leaveGameFuture.whenComplete(() => {
-//                  print("when complete called");
-//                  Navigator.pushReplacementNamed(context, '/');
-                });
+                Fluttertoast.showToast(
+                  msg: "Leaving game... be patient :)",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.CENTER,
+                );
+                leaveGame(context, widget.args.gameCode, widget.args.playerName);
               },
               child: Text('Leave Lobby'),
             ),
