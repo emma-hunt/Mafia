@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
+import 'mafiaRole.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
           case '/joinerGameLobby':
             final JoinGameArguments arguments = settings.arguments;
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
+            break;
+          case '/mafiaRole':
+            return MaterialPageRoute(builder: (context) => MafiaRolePage());
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
@@ -88,6 +92,20 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               child: Text(
                 "Join Game",
+              ),
+            ),
+            FlatButton (
+              color: Colors.red[900],
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.redAccent[700],
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/mafiaRole');
+              },
+              child: Text(
+                "Mafia Role Page",
               ),
             ),
           ],
