@@ -173,7 +173,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                               widget.timer = null;
                               Navigator.pushReplacementNamed(context, '/');
                             },
-                            child: Text('Return Home'),
+                            child: Text('Start Game'),
                           ),
                         ]
                     ),
