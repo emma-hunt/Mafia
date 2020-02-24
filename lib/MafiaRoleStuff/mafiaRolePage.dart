@@ -52,11 +52,11 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
       List<dynamic> friends = jsonDecode(response.body)["friends"];
 
       String otherMafiaPlayerName = "";
-      if (friends.length < 1) {
+      if (friends.isEmpty) {
         otherMafiaPlayerName = "You are the only Mafia!";
 
       } else {
-        otherMafiaPlayerName = friends[0];
+        otherMafiaPlayerName = friends[0]; //will only ever be one other mafia or none other...
       }
 
       setState(() {
