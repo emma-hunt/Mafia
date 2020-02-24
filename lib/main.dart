@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mafia_app/MafiaRoleStuff/MafiaRolePageArgs.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArgs.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
-import 'MafiaRoleStuff/mafiaRolePage.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
+import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -37,7 +38,10 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
             break;
           case '/mafiaRole':
-            return MaterialPageRoute(builder: (context) => MafiaRolePage(args: settings.arguments));
+            return MaterialPageRoute(builder: (context) => MafiaRole(args: settings.arguments));
+            break;
+          case '/soloMafiaRole':
+            return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: settings.arguments));
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
@@ -103,7 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
-                final MafiaRolePageArgs args = new MafiaRolePageArgs(gameId: "12345", personId: "zack");
+                final MafiaRoleArgs args = new MafiaRoleArgs(gameId: "12345", personId: "zack");
                 Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
               },
               child: Text(
