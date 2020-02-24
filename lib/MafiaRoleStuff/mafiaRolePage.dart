@@ -56,7 +56,7 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
         otherMafiaPlayerName = "You are the only Mafia!";
 
       } else {
-        otherMafiaPlayerName = friends[0]; //will only ever be one other mafia or none other...
+        otherMafiaPlayerName = "The other mafia member is: " + friends[0]; //will only ever be one other mafia or none other...
       }
 
       setState(() {
