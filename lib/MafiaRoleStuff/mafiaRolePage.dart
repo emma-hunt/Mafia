@@ -1,11 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:mafia_app/MafiaRoleStuff/MafiaRolePageArgs.dart';
 
 
 class MafiaRolePage extends StatefulWidget {
+  final MafiaRolePageArgs args;
+
+  MafiaRolePage({this.args});
+
   @override
   State<StatefulWidget> createState() {
     return _MafiaRolePageState();
@@ -32,14 +36,15 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
   @override
   void initState() {
     super.initState();
-    getOtherMafiaMemberName();
+    getOtherMafiaMemberName(widget.args);
   }
 
-  void getOtherMafiaMemberName() async {
+  void getOtherMafiaMemberName(MafiaRolePageArgs args) async {
 
     String url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
-    String body = '{"personId": "1", "gameId": "1", "role": "mafia"}';
-
+    String body = '{"personId": "' + args.personId + '", "gameId": "' + args.gameId + '", "role": "mafia"}';
+    print("url: " + url);
+    print("body: " + body);
     final response = await http.put(url, body: body);
     if (response.statusCode == 200) {
       print("getOtherMafiaMemberName: " + response.statusCode.toString());
