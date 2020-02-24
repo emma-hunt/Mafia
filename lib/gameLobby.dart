@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mafia_app/YourRolePage.dart';
 import 'package:mafia_app/createJoinGame.dart';
 
 class CreateGameResponse {
@@ -80,15 +81,10 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/yourRolePage', arguments: YourRoleArgument(widget.args.playerName, createGameResponse.gameId));
               },
-              child: Text('Return Home'),
+              child: Text('your role'),
             ),
-            RaisedButton(onPressed: (){
-              Navigator.pushReplacementNamed(context, '/yourRolePage');
-            },
-              child: Text('Go to your role'),
-            )
           ],
         ),
       ),

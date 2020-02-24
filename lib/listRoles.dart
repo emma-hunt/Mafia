@@ -5,7 +5,15 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 
+class ListRolesArguments{
+  final String roles;
+  ListRolesArguments({this.roles});
+}
+
 class ListRoles extends StatefulWidget {
+  final ListRolesArguments args;
+  ListRoles({this.args});
+
   @override
   _ListRoles createState() => _ListRoles();
 }
@@ -52,7 +60,7 @@ class _ListRoles extends State<ListRoles> {
                       gravity: ToastGravity.BOTTOM,
                     );
                   },
-                  child: Text('sleep...'),
+                  child: Text('time to sleep...'),
                   //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
                 )
               ]),
