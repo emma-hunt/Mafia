@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
+import 'package:mafia_app/listRoles.dart';
 
 class YourRoleArgument {
   final String playerName;
@@ -84,7 +85,7 @@ class _YourRolePage extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRolesPage');
+                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ListRolesArguments());
                       },
                     child: Text('Roles'),
                   ),
