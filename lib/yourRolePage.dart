@@ -6,44 +6,47 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 import 'package:mafia_app/listRoles.dart';
 
-class YourRoleArgument {
+class YourRoleArguments {
   final String playerName;
-  final String gameId;
+  final String playerID;
+  final String gameID;
+  final List<dynamic> playerList;
+  final bool isOwner;
 
-  YourRoleArgument(this.playerName, this.gameId);
+  YourRoleArguments(this.playerName, this.playerID, this.gameID, this.playerList, this.isOwner);
 }
 
-class PlayerRole{
+class PlayerRoleResponse{
   final String role;
-  PlayerRole({this.role});
-  factory PlayerRole.fromJson(Map<String, dynamic> json){
-    return PlayerRole(
+  PlayerRoleResponse({this.role});
+  factory PlayerRoleResponse.fromJson(Map<String, dynamic> json){
+    return PlayerRoleResponse(
       role: json['playerId']
     );
   }
 }
 
 class YourRolePage extends StatefulWidget {
-  final YourRoleArgument args;
+  final YourRoleArguments args;
 
   YourRolePage({this.args});
 
   @override
-  _YourRolePage createState() => _YourRolePage();
+  _YourRolePageState createState() => _YourRolePageState();
 }
 
 
-class _YourRolePage extends State<YourRolePage> {
-  Future<PlayerRole> playerRole;
+class _YourRolePageState extends State<YourRolePage> {
+  Future<PlayerRoleResponse> playerRole;
 
-  Future<PlayerRole> fetchPlayerRole() async {
+  Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/' 
-                                    + widget.args.playerName + '/' + widget.args.gameId);
+                                    + widget.args.playerName + '/' + widget.args.gameID);
     if (response.statusCode == 200) {
       print("YourRolePage: PlayerRole response code: " + response.statusCode.toString());
       print("YourRolePage: body: " + response.body.toString());
 
-      PlayerRole playerRole = PlayerRole.fromJson(json.decode(response.body));
+      PlayerRoleResponse playerRole = PlayerRoleResponse.fromJson(json.decode(response.body));
       print("YourRolePage: role: " + playerRole.role);
 
       return playerRole;
@@ -102,7 +105,7 @@ class _YourRolePage extends State<YourRolePage> {
             Expanded(
               child: Container(
                 alignment: Alignment(0.0, 0.0),
-                child: FutureBuilder<PlayerRole>(
+                child: FutureBuilder<PlayerRoleResponse>(
                   future: playerRole,
                   builder: (context, snapshot){
                     if(snapshot.hasData){

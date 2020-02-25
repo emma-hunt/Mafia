@@ -10,15 +10,15 @@ class ListRolesArguments{
   ListRolesArguments({this.roles});
 }
 
-class ListRoles extends StatefulWidget {
+class ListRolesPage extends StatefulWidget {
   final ListRolesArguments args;
-  ListRoles({this.args});
+  ListRolesPage({this.args});
 
   @override
-  _ListRoles createState() => _ListRoles();
+  _ListRolesPageState createState() => _ListRolesPageState();
 }
 
-class _ListRoles extends State<ListRoles> {
+class _ListRolesPageState extends State<ListRolesPage> {
 
   @override
   Widget build(BuildContext context) {
