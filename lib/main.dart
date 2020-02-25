@@ -4,6 +4,7 @@ import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
 import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaReveal.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
             break;
           case '/soloMafiaRole':
             return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: settings.arguments));
+            break;
+          case '/mafiaReveal':
+            return MaterialPageRoute(builder: (context) => MafiaReveal(args: settings.arguments));
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
