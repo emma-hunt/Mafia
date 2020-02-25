@@ -42,7 +42,6 @@ class LobbyStateResponse {
 
 class CreatorGameLobbyPage extends StatefulWidget {
   final CreateGameArguments args;
-  Timer timer;
 
   CreatorGameLobbyPage({this.args});
 
@@ -53,6 +52,7 @@ class CreatorGameLobbyPage extends StatefulWidget {
 class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Future<CreateGameResponse> createGameResponse;
   Future<LobbyStateResponse> lobbyStateResponse;
+  Timer timer;
 
   Future<CreateGameResponse> _fetchCreateGame() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + widget.args.playerName);
@@ -89,9 +89,9 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
   }
 
-  void _pollLobbyState(CreateGameResponse createResponse) async {
+  void _pollLobbyState(CreateGameResponse createGameResponse) async {
     setState(() {
-      this.lobbyStateResponse = _checkLobbyState(createResponse);
+      this.lobbyStateResponse = _checkLobbyState(createGameResponse);
     });
   }
 
@@ -119,8 +119,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
   void _startPlaying(LobbyStateResponse lobbyState, CreateGameResponse createResponse) {
     print("game has started");
-    widget.timer.cancel();
-    widget.timer = null;
     Navigator.pushReplacementNamed(context, '/yourRolePage', arguments: YourRoleArguments(createResponse.playerName, createResponse.playerID, createResponse.gameID, lobbyState.playerList, true));
   }
 
@@ -128,6 +126,26 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   void initState() {
     super.initState();
     createGameResponse = _fetchCreateGame();
+  }
+
+  @override
+  void deactivate() {
+    print("IN DEACTIVATE");
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print("IN DISPOSE");
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+    super.dispose();
   }
 
   @override
@@ -144,7 +162,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
               future: createGameResponse,
               builder: (context, createGameSnapshot) {
                 if (createGameSnapshot.hasData) {
-                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(createGameSnapshot.data));
+                  timer = Timer(Duration(seconds: 5), () => _pollLobbyState(createGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
@@ -194,8 +212,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                               return RaisedButton(
                                 onPressed: () {
                                   if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 2) {
-                                    widget.timer.cancel();
-                                    widget.timer = null;
                                     Fluttertoast.showToast(
                                       msg: "Starting game... be patient :)",
                                       toastLength: Toast.LENGTH_LONG,
@@ -230,8 +246,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                         ),
                         RaisedButton(
                           onPressed: () {
-                            widget.timer.cancel();
-                            widget.timer = null;
                             Navigator.pushReplacementNamed(context, '/');
                           },
                           child: Text('Return Home'),
@@ -296,7 +310,6 @@ class JoinGameResponse {
 
 class JoinerGameLobbyPage extends StatefulWidget {
   final JoinGameArguments args;
-  Timer timer;
 
   JoinerGameLobbyPage({this.args});
 
@@ -307,6 +320,7 @@ class JoinerGameLobbyPage extends StatefulWidget {
 class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
   Future<JoinGameResponse> joinGameResponse;
   Future<LobbyStateResponse> lobbyStateResponse;
+  Timer timer;
 
   Future<JoinGameResponse> _fetchJoinGame() async {
     final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/join/' + widget.args.gameCode + '/' + widget.args.playerName);
@@ -352,8 +366,6 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
 
   void _startPlaying(LobbyStateResponse lobbyState, JoinGameResponse joinResponse) {
     print("game has started");
-    widget.timer.cancel();
-    widget.timer = null;
     Navigator.pushReplacementNamed(context, '/yourRolePage', arguments: YourRoleArguments(joinResponse.playerName, joinResponse.playerID, joinResponse.gameID, lobbyState.playerList, false));
   }
 
@@ -366,9 +378,9 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
   @override
   void deactivate() {
     print("IN DEACTIVATE");
-    if(widget.timer != null) {
-      widget.timer.cancel();
-      widget.timer = null;
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
     }
     super.deactivate();
   }
@@ -376,10 +388,10 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
   @override
   void dispose() {
     print("IN DISPOSE");
-    if(widget.timer != null) {
-      widget.timer.cancel();
+    if(timer != null) {
+      timer.cancel();
     }
-    widget.timer = null;
+    timer = null;
     super.dispose();
   }
 
@@ -397,7 +409,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
               future: joinGameResponse,
               builder: (context, joinGameSnapshot) {
                 if (joinGameSnapshot.hasData) {
-                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(joinGameSnapshot.data));
+                  timer = Timer(Duration(seconds: 5), () => _pollLobbyState(joinGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
@@ -458,8 +470,6 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
             ),
             RaisedButton(
               onPressed: () {
-                widget.timer.cancel();
-                widget.timer = null;
                 Fluttertoast.showToast(
                   msg: "Leaving game... be patient :)",
                   toastLength: Toast.LENGTH_LONG,
