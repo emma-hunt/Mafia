@@ -25,7 +25,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
   SoloMafiaRoleArgs args;
   int roleNum;
 
-  _SoloMafiaRoleState({args});
+  _SoloMafiaRoleState({this.args});
 
   List<bool> isCenterButtonEnabled = [true, true, true];
   @override

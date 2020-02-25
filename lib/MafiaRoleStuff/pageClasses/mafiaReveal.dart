@@ -11,7 +11,7 @@ class MafiaReveal extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _MafiaRevealState();
+    return _MafiaRevealState(args: args);
   }
 }
 
@@ -40,7 +40,7 @@ class _MafiaRevealState extends State<MafiaReveal> {
   }
 
   Widget _getContinueButton() {
-    if (this.roleToReveal == "") return CircularProgressIndicator();
+    if (this.roleToReveal == "loading...") return CircularProgressIndicator();
     return RaisedButton(
       onPressed: () {
         Navigator.pushReplacementNamed(context, '/');
@@ -57,7 +57,10 @@ class _MafiaRevealState extends State<MafiaReveal> {
   }
 
   void _getRoleToReveal() async {
-    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/{' + this.args.gameId + '}/{' + this.args.roleNum.toString() + '}');
+    String url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/' + this.args.gameId + '/' + (this.args.roleNum + 1).toString();
+    String url2 = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/12345/1';
+
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       print("getRoleToReveal: " + response.statusCode.toString());
       print(response.body.toString());
@@ -66,9 +69,12 @@ class _MafiaRevealState extends State<MafiaReveal> {
       });
     }
     else {
-      print(response.statusCode);
+      print('Center Card Role Reveal API: ' + response.statusCode.toString());
       print(response.body.toString());
-      throw Exception('Unable to leave game');
+      setState(() {
+        this.roleToReveal = 'ERROR: unable to retrieve center card role for solo mafia role/mafia reveal';
+      });
+//      throw Exception('ERROR: unable to retrieve center card role for solo mafia role/mafia reveal');
     }
   }
 }
