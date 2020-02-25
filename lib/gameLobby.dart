@@ -193,7 +193,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                               print("has data");
                               return RaisedButton(
                                 onPressed: () {
-                                  if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 2) {
+                                  if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 3) {
                                     widget.timer.cancel();
                                     widget.timer = null;
                                     Fluttertoast.showToast(
@@ -467,7 +467,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
                 );
                 leaveGame(context, widget.args.gameCode, widget.args.playerName);
               },
-              child: Text('Leave Lobby'),
+              child: Text('Leave Game'),
             ),
           ],
         ),

@@ -96,7 +96,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                hintText: '5 character code',
+                hintText: '6 character code',
                 labelText: 'Game Code',
               ),
             ),
