@@ -18,10 +18,12 @@ class YourRoleArguments {
 
 class PlayerRoleResponse{
   final String role;
-  PlayerRoleResponse({this.role});
+  final List<dynamic> allRoles;
+  PlayerRoleResponse({this.role, this.allRoles});
   factory PlayerRoleResponse.fromJson(Map<String, dynamic> json){
     return PlayerRoleResponse(
-      role: json['playerId']
+      role: json['role'],
+      allRoles: json['allRoles']
     );
   }
 }
@@ -40,8 +42,8 @@ class _YourRolePageState extends State<YourRolePage> {
   Future<PlayerRoleResponse> playerRole;
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
-    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/' 
-                                    + widget.args.playerName + '/' + widget.args.gameID);
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
+                                    + widget.args.gameID + '/' + widget.args.playerID);
     if (response.statusCode == 200) {
       print("YourRolePage: PlayerRole response code: " + response.statusCode.toString());
       print("YourRolePage: body: " + response.body.toString());
@@ -67,11 +69,11 @@ class _YourRolePageState extends State<YourRolePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Your Role"),
-        ),
-        body: Center(
-            child: Column(
+      appBar: AppBar(
+        title: Text("Your Role"),
+      ),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
@@ -109,6 +111,7 @@ class _YourRolePageState extends State<YourRolePage> {
                   future: playerRole,
                   builder: (context, snapshot){
                     if(snapshot.hasData){
+                      print("role data received");
                       return Text(snapshot.data.role);
                     }
                     else if (snapshot.hasError){
@@ -116,7 +119,7 @@ class _YourRolePageState extends State<YourRolePage> {
                     }
                     return CircularProgressIndicator();
                   },
-                  ),
+                ),
               ),
             ),
             Text(
@@ -135,6 +138,8 @@ class _YourRolePageState extends State<YourRolePage> {
               //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
             )
           ],
-        )));
+        )
+      )
+    );
   }
 }
