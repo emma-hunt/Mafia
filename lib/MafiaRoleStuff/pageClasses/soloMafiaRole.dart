@@ -20,6 +20,7 @@ class SoloMafiaRole extends StatefulWidget {
 class _SoloMafiaRoleState extends State<SoloMafiaRole> {
   SoloMafiaRoleArgs args;
   int roleNum;
+  bool isCardSelected = false;
 
   _SoloMafiaRoleState({this.args});
 
@@ -30,16 +31,27 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
       appBar: AppBar(
         title: Text('Solo Mafia Role'),
       ),
-      body: Center(
+      body: Container(
         child: Column(
-          children: <Widget> [
-            Text("You are the only mafia! Therefore you are priveledged with viewed one of the center cards! Choose one to continue"),
-            _buildCenterCardButton(0),
-            _buildCenterCardButton(1),
-            _buildCenterCardButton(2),
-            _buildContinueButton(),
-          ]
-        ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget> [
+              Container(
+                padding: EdgeInsets.all(50),
+                child: Text("You are the only mafia! Therefore you are priveledged with viewed one of the center cards! Choose one to continue"),
+              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget> [
+                _buildCenterCardButton(0),
+                _buildCenterCardButton(1),
+                _buildCenterCardButton(2),
+                Container(
+                  child: _buildContinueButton(),
+                  width: MediaQuery.of(context).size.width * 0.6,
+                ),
+              ]
+            ),
+        ]),
       ),
     );
   }
@@ -54,7 +66,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
     return FlatButton (
       color: Colors.red[900],
       textColor: Colors.white,
-      disabledColor: Colors.grey,
+      disabledColor: Colors.white,
       disabledTextColor: Colors.black,
       padding: EdgeInsets.all(8.0),
       splashColor: Colors.redAccent[700],
@@ -68,7 +80,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
         Navigator.pushReplacementNamed(context, '/mafiaReveal', arguments: MafiaRevealArgs(this.args, this.roleNum));
         return;
       },
-      child: Text("Continue"),
+      child: isCardSelected ? Text("Continue") : Text("Choose a card to see it's role!"),
     );
   }
 
@@ -76,7 +88,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
     return FlatButton(
       color: Colors.grey,
       textColor: Colors.black,
-      disabledColor: Colors.lightGreen[900],
+      disabledColor: Colors.blueGrey,
       disabledTextColor: Colors.white,
       padding: EdgeInsets.all(8.0),
       onPressed: this.isCenterButtonEnabled[roleNum] ? () => _centerButtonClicked(roleNum) : null,
@@ -88,6 +100,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
     setState(() {
       for (int i = 0; i < 3; i++) {this.isCenterButtonEnabled[i] = true;}
       this.isCenterButtonEnabled[roleNum] = false;
+      this.isCardSelected = true;
     });
   }
 }

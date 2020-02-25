@@ -31,7 +31,10 @@ class _MafiaRevealState extends State<MafiaReveal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(this.roleToReveal),
+            Container(
+              child: Text(this.roleToReveal),
+              margin: EdgeInsets.all(30),
+            ),
             _getContinueButton(),
           ],
         ),
