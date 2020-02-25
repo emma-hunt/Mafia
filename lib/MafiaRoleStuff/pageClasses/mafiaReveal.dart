@@ -41,7 +41,13 @@ class _MafiaRevealState extends State<MafiaReveal> {
 
   Widget _getContinueButton() {
     if (this.roleToReveal == "loading...") return CircularProgressIndicator();
-    return RaisedButton(
+    return FlatButton(
+      color: Colors.red[900],
+      textColor: Colors.white,
+      disabledColor: Colors.grey,
+      disabledTextColor: Colors.black,
+      padding: EdgeInsets.all(8.0),
+      splashColor: Colors.redAccent[700],
       onPressed: () {
         Navigator.pushReplacementNamed(context, '/');
         return;

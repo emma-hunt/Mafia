@@ -41,9 +41,19 @@ class _MafiaRoleState extends State<MafiaRole> {
 
   Widget _buildContinueButton() {
     if (!isContinueButtonEnabled) return CircularProgressIndicator();
-    return new RaisedButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, '/'),
-        child: Text("Continue"),
+    return FlatButton (
+      color: Colors.red[900],
+      textColor: Colors.white,
+      disabledColor: Colors.grey,
+      disabledTextColor: Colors.black,
+      padding: EdgeInsets.all(8.0),
+      splashColor: Colors.redAccent[700],
+      onPressed: () {
+        Navigator.pushReplacementNamed(context, '/');
+      },
+      child: Text(
+        "Continue",
+      ),
     );
   }
 
