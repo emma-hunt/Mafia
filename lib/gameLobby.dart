@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'rolePage.dart';
 
 class CreateGameResponse {
   final String playerName;
@@ -47,24 +47,6 @@ class CreatorGameLobbyPage extends StatefulWidget {
   CreatorGameLobbyPage({this.args});
 
   @override
-  void deactivate() {
-    print("IN DEACTIVATE");
-    if(timer != null) {
-      timer.cancel();
-      timer = null;
-    }
-  }
-
-  @override
-  void dispose() {
-    print("IN DISPOSE");
-    if(timer != null) {
-      timer.cancel();
-    }
-    timer = null;
-  }
-
-  @override
   _CreatorGameLobbyPageState createState() => _CreatorGameLobbyPageState();
 }
 
@@ -87,12 +69,16 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
   }
 
-  Future<LobbyStateResponse> _checkLobbyState(String gameID) async {
-    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + gameID);
+  Future<LobbyStateResponse> _checkLobbyState(CreateGameResponse createResponse) async {
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + createResponse.gameID);
     if (response.statusCode == 200) {
-      print(response.body);
+      //print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
-      print(lobbyState.playerList);
+      //print(lobbyState.playerList);
+      if(lobbyState.isGameStarted) {
+        // game is started, time to move to the next page
+        _startPlaying(lobbyState, createResponse);
+      }
       return lobbyState;
     }
     else {
@@ -103,17 +89,45 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
   }
 
-  void _pollLobbyState(String gameID) async {
+  void _pollLobbyState(CreateGameResponse createResponse) async {
     setState(() {
-      this.lobbyStateResponse = _checkLobbyState(gameID);
+      this.lobbyStateResponse = _checkLobbyState(createResponse);
     });
+  }
+
+  void _startGamePost(String gameID, List<dynamic> playerList) async {
+    print("SENDING START GAME!!!!");
+    List<String> roles = ["mafia", "mafia", "civilian"];
+    for (int i = 0; i < playerList.length; i++) {
+      roles.add("civilian");
+    }
+    String jsonRoles = jsonEncode(roles);
+    String startBody = '{"roles": ' + jsonRoles + '}';
+    print(startBody);
+    Map<String, String> headers = {"Content-type": "application/json"};
+    final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/start/' + gameID, headers: headers, body: startBody);
+    if (response.statusCode == 200) {
+      print("startGame: " + response.statusCode.toString());
+      print(response.body.toString());
+    }
+    else {
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception('Unable to start game');
+    }
+  }
+
+  void _startPlaying(LobbyStateResponse lobbyState, CreateGameResponse createResponse) {
+    print("game has started");
+    widget.timer.cancel();
+    widget.timer = null;
+    Navigator.pushReplacementNamed(context, '/rolePage', arguments: RolePageArguments(createResponse.playerName, createResponse.playerID, createResponse.gameID, lobbyState.playerList, true));
   }
 
   @override
   void initState() {
     super.initState();
     createGameResponse = _fetchCreateGame();
-
   }
 
   @override
@@ -130,7 +144,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
               future: createGameResponse,
               builder: (context, createGameSnapshot) {
                 if (createGameSnapshot.hasData) {
-                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(createGameSnapshot.data.gameID));
+                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(createGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
@@ -139,45 +153,90 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                         minHeight: 150.0
                     ),
                     child: Column(
-                        children: <Widget>[
-                          Text("Game ID: " + createGameSnapshot.data.gameID.toString()),
-                          Text("\nPlayers: "),
-                          FutureBuilder<LobbyStateResponse> (
-                            future: lobbyStateResponse,
-                            builder: (context, lobbyStateSnapshot) {
-                              if (lobbyStateSnapshot.hasData) {
-                                return Flexible (
+                      children: <Widget>[
+                        Text("Game ID: " + createGameSnapshot.data.gameID.toString()),
+                        Text("\nPlayers: "),
+                        FutureBuilder<LobbyStateResponse> (
+                          // this future builder is for the player list
+                          future: lobbyStateResponse,
+                          builder: (context, lobbyStateSnapshot) {
+                            Flexible players;
+                            if (lobbyStateSnapshot.hasData) {
+                              return Flexible (
+                                fit: FlexFit.loose,
+                                child: ListView.builder(
+                                    padding: const EdgeInsets.all(8),
+                                    itemCount: lobbyStateSnapshot.data.playerList.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Center(
+                                        child: Text(lobbyStateSnapshot.data.playerList[index]),
+                                      );
+                                    }
+                                ),
+                              );
+                            }
+                            else {
+                              return Flexible (
                                   fit: FlexFit.loose,
-                                  child: ListView.builder(
-                                      padding: const EdgeInsets.all(8),
-                                      itemCount: lobbyStateSnapshot.data.playerList.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return Center(
-                                          child: Text(lobbyStateSnapshot.data.playerList[index]),
-                                        );
-                                      }
-                                  ),
-                                );
-                              }
-                              else {
-                                return Flexible (
-                                    fit: FlexFit.loose,
-                                    child: Center(
-                                      child: Text(createGameSnapshot.data.playerName),
-                                    )
-                                );
-                              }
-                            },
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              widget.timer.cancel();
-                              widget.timer = null;
-                              Navigator.pushReplacementNamed(context, '/');
-                            },
-                            child: Text('Start Game'),
-                          ),
-                        ]
+                                  child: Center(
+                                    child: Text(createGameSnapshot.data.playerName),
+                                  )
+                              );
+                            }
+                          },
+                        ),
+                        FutureBuilder<LobbyStateResponse> (
+                          // this future is for the start game button
+                          future: lobbyStateResponse,
+                          builder: (context, lobbyStateSnapshot) {
+                            if (lobbyStateSnapshot.hasData) {
+                              print("has data");
+                              return RaisedButton(
+                                onPressed: () {
+                                  if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 2) {
+                                    widget.timer.cancel();
+                                    widget.timer = null;
+                                    Fluttertoast.showToast(
+                                      msg: "Starting game... be patient :)",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                                    _startGamePost(createGameSnapshot.data.gameID, lobbyStateSnapshot.data.playerList);
+                                  }
+                                  else {
+                                    Fluttertoast.showToast(
+                                      msg: "You must have 3+ players to start",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                                  }
+                                },
+                                child: Text('Start Game'),
+                              );
+                            }
+                            else {
+                              return  RaisedButton(
+                                onPressed: () {
+                                  Fluttertoast.showToast(
+                                    msg: "You must have 3+ players to start",
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.CENTER,
+                                  );
+                                },
+                                child: Text('Start Game'),
+                              );
+                            }
+                          },
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            widget.timer.cancel();
+                            widget.timer = null;
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          child: Text('Return Home'),
+                        ),
+                      ]
                     ),
                   );
                 }
@@ -265,12 +324,16 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     }
   }
 
-  Future<LobbyStateResponse> _checkLobbyState(String gameID) async {
-    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + gameID);
+  Future<LobbyStateResponse> _checkLobbyState(JoinGameResponse joinResponse) async {
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + joinResponse.gameID);
     if (response.statusCode == 200) {
       print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
       print(lobbyState.playerList);
+      if(lobbyState.isGameStarted) {
+        // game is started, time to move to the next page
+        _startPlaying(lobbyState, joinResponse);
+      }
       return lobbyState;
     }
     else {
@@ -281,10 +344,17 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     }
   }
 
-  void _pollLobbyState(String gameID) async {
+  void _pollLobbyState(JoinGameResponse joinResponse) async {
     setState(() {
-      this.lobbyStateResponse = _checkLobbyState(gameID);
+      this.lobbyStateResponse = _checkLobbyState(joinResponse);
     });
+  }
+
+  void _startPlaying(LobbyStateResponse lobbyState, JoinGameResponse joinResponse) {
+    print("game has started");
+    widget.timer.cancel();
+    widget.timer = null;
+    Navigator.pushReplacementNamed(context, '/rolePage', arguments: RolePageArguments(joinResponse.playerName, joinResponse.playerID, joinResponse.gameID, lobbyState.playerList, false));
   }
 
   @override
@@ -327,7 +397,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
               future: joinGameResponse,
               builder: (context, joinGameSnapshot) {
                 if (joinGameSnapshot.hasData) {
-                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(joinGameSnapshot.data.gameID));
+                  widget.timer = Timer.periodic(Duration(seconds: 5), (_) => _pollLobbyState(joinGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
@@ -366,14 +436,6 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
                               }
                             },
                           ),
-                          RaisedButton(
-                            onPressed: () {
-                              widget.timer.cancel();
-                              widget.timer = null;
-                              Navigator.pushReplacementNamed(context, '/');
-                            },
-                            child: Text('Return Home'),
-                          ),
                         ]
                     ),
                   );
@@ -396,12 +458,8 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
             ),
             RaisedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Return Home'),
-            ),
-            RaisedButton(
-              onPressed: () {
+                widget.timer.cancel();
+                widget.timer = null;
                 Fluttertoast.showToast(
                   msg: "Leaving game... be patient :)",
                   toastLength: Toast.LENGTH_LONG,

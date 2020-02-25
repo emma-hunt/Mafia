@@ -10,8 +10,9 @@ class RolePageArguments {
   final String playerID;
   final String gameID;
   final List<dynamic> playerList;
+  final bool isOwner;
 
-  RolePageArguments(this.playerName, this.playerID, this.gameID, this.playerList);
+  RolePageArguments(this.playerName, this.playerID, this.gameID, this.playerList, this.isOwner);
 }
 
 class RolePage extends StatefulWidget {
