@@ -111,7 +111,7 @@ class _WelcomePageState extends State<WelcomePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
-                final MafiaRoleArgs args = new MafiaRoleArgs(gameId: "12345", personId: "zack");
+                final MafiaRoleArgs args = new MafiaRoleArgs(gameId: "2bb61d", personName: "connor", personId: "91fdde");
                 Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
               },
               child: Text(

@@ -67,17 +67,26 @@ class _MafiaRoleState extends State<MafiaRole> {
 
     String url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
     String body = '{"personId": "' + args.personId + '", "gameId": "' + args.gameId + '", "role": "mafia"}';
-    print("url: " + url);
-    print("body: " + body);
     final response = await http.put(url, body: body);
     if (response.statusCode == 200) {
-      print("getOtherMafiaMemberName: " + response.statusCode.toString());
-      print(response.body.toString());
-      List<dynamic> friends = jsonDecode(response.body)["friends"];
+      print("getOtherMafiaMemberName : " + response.statusCode.toString() + " : " + response.body.toString());
+
+      List<dynamic> mafiaMembers = jsonDecode(response.body)["friends"];
+
+      if (mafiaMembers.isEmpty) {
+        throw Exception('ERROR: no mafia members listed??');
+      }
+
+      List<String> friends = [];
+
+      for (dynamic member in mafiaMembers) {
+        if (member != args.personName) {
+          friends.add(member.toString());
+        }
+      }
 
       String otherMafiaPlayerName = "";
       if (friends.isEmpty) {
-        print("only one mafia exists... going to soloMafiaRole screen...");
         Navigator.pushReplacementNamed(context, '/soloMafiaRole', arguments: SoloMafiaRoleArgs(args));
         return;
 

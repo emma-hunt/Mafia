@@ -37,7 +37,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
             children: <Widget> [
               Container(
                 padding: EdgeInsets.all(50),
-                child: Text("You are the only mafia! Therefore you are priveledged with viewed one of the center cards! Choose one to continue"),
+                child: Text("You are the only mafia! Therefore you are priveledged with viewing one of the center cards! Choose one to continue"),
               ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,

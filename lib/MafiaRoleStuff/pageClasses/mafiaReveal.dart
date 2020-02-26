@@ -67,14 +67,12 @@ class _MafiaRevealState extends State<MafiaReveal> {
 
   void _getRoleToReveal() async {
     String url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/' + this.args.gameId + '/' + (this.args.roleNum + 1).toString();
-    String url2 = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/12345/1';
 
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print("getRoleToReveal: " + response.statusCode.toString());
-      print(response.body.toString());
+      print("getRoleToReveal : " + response.statusCode.toString() + " : " + response.body.toString());
       setState(() {
-        this.roleToReveal = jsonDecode(response.body)["role"];
+        this.roleToReveal = "The role is " + jsonDecode(response.body)["role"] + "!";
       });
     }
     else {
