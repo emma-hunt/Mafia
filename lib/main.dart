@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mafia_app/yourRolePage.dart';
+import 'package:mafia_app/listRoles.dart';
 import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArgs.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
+import 'yourRolePage.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
 import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaReveal.dart';
@@ -46,6 +49,14 @@ class MyApp extends StatelessWidget {
             break;
           case '/mafiaReveal':
             return MaterialPageRoute(builder: (context) => MafiaReveal(args: settings.arguments));
+            break;
+          case '/yourRolePage':
+            final YourRoleArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => YourRolePage(args: arguments));
+            break;
+          case '/listRoles':
+            final ListRolesArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => ListRolesPage(args: arguments));
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
