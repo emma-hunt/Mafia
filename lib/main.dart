@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/listRoles.dart';
+import 'package:mafia_app/CivilianStuff/CivilianRole.dart';
+import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'yourRolePage.dart';
@@ -44,6 +46,10 @@ class MyApp extends StatelessWidget {
           case '/listRoles':
             final ListRolesArguments arguments = settings.arguments;
             return MaterialPageRoute(builder: (context) => ListRolesPage(args: arguments));
+            break;
+          case '/civilianRole':
+            final CivilianRoleArgs arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => CivilianRole(args: arguments));
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
@@ -99,6 +105,20 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               child: Text(
                 "Join Game",
+              ),
+            ),
+            FlatButton (
+              color: Colors.red[900],
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.redAccent[700],
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/civilianRole');
+              },
+              child: Text(
+                "Civilian Role",
               ),
             ),
           ],
