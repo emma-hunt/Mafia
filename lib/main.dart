@@ -120,35 +120,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 "Join Game",
               ),
             ),
-            FlatButton (
-              color: Colors.red[900],
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              padding: EdgeInsets.all(8.0),
-              splashColor: Colors.redAccent[700],
-              onPressed: () {
-                final MafiaRoleArgs args = new MafiaRoleArgs(gameId: "2bb61d", personName: "connor", personId: "91fdde");
-                Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
-              },
-              child: Text(
-                "Mafia Role Page",
-              ),
-            ),
-            FlatButton (
-              color: Colors.red[900],
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              padding: EdgeInsets.all(8.0),
-              splashColor: Colors.redAccent[700],
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/civilianRole');
-              },
-              child: Text(
-                "Civilian Role",
-              ),
-            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
