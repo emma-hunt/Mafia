@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/listRoles.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArgs.dart';
 import 'package:mafia_app/CivilianStuff/CivilianRole.dart';
 import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'yourRolePage.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
+import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaReveal.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -38,6 +42,15 @@ class MyApp extends StatelessWidget {
           case '/joinerGameLobby':
             final JoinGameArguments arguments = settings.arguments;
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
+            break;
+          case '/mafiaRole':
+            return MaterialPageRoute(builder: (context) => MafiaRole(args: settings.arguments));
+            break;
+          case '/soloMafiaRole':
+            return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: settings.arguments));
+            break;
+          case '/mafiaReveal':
+            return MaterialPageRoute(builder: (context) => MafiaReveal(args: settings.arguments));
             break;
           case '/yourRolePage':
             final YourRoleArguments arguments = settings.arguments;
@@ -105,6 +118,21 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               child: Text(
                 "Join Game",
+              ),
+            ),
+            FlatButton (
+              color: Colors.red[900],
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.redAccent[700],
+              onPressed: () {
+                final MafiaRoleArgs args = new MafiaRoleArgs(gameId: "2bb61d", personName: "connor", personId: "91fdde");
+                Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
+              },
+              child: Text(
+                "Mafia Role Page",
               ),
             ),
             FlatButton (
