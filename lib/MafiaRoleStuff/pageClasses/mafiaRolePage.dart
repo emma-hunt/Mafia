@@ -1,25 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArgs.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArgs.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
 
 
-class MafiaRole extends StatefulWidget {
-  final MafiaRoleArgs args;
+class MafiaRolePage extends StatefulWidget {
+  final MafiaRoleArguments arguments;
 
-  MafiaRole({this.args});
+  MafiaRolePage({this.arguments});
 
   @override
   State<StatefulWidget> createState() {
-    return _MafiaRoleState();
+    return _MafiaRolePageState();
   }
 }
 
-class _MafiaRoleState extends State<MafiaRole> {
-  String otherMafiaName = "loading...";
-  bool isContinueButtonEnabled = false;
+class _MafiaRolePageState extends State<MafiaRolePage> {
+  String _otherMafiaName = "loading...";
+  bool _isContinueButtonEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class _MafiaRoleState extends State<MafiaRole> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(otherMafiaName),
+            Text(_otherMafiaName),
             _buildContinueButton(),
           ],
         ),
@@ -40,7 +39,7 @@ class _MafiaRoleState extends State<MafiaRole> {
   }
 
   Widget _buildContinueButton() {
-    if (!isContinueButtonEnabled) return CircularProgressIndicator();
+    if (!_isContinueButtonEnabled) return CircularProgressIndicator();
     return FlatButton (
       color: Colors.red[900],
       textColor: Colors.white,
@@ -60,10 +59,10 @@ class _MafiaRoleState extends State<MafiaRole> {
   @override
   void initState() {
     super.initState();
-    getOtherMafiaName(widget.args);
+    getOtherMafiaName(widget.arguments);
   }
 
-  void getOtherMafiaName(MafiaRoleArgs args) async {
+  void getOtherMafiaName(MafiaRoleArguments args) async {
 
     String url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
     String body = '{"personId": "' + args.personId + '", "gameId": "' + args.gameId + '", "role": "mafia"}';
@@ -87,16 +86,17 @@ class _MafiaRoleState extends State<MafiaRole> {
 
       String otherMafiaPlayerName = "";
       if (friends.isEmpty) {
-        Navigator.pushReplacementNamed(context, '/soloMafiaRole', arguments: SoloMafiaRoleArgs(args));
+        Navigator.pushReplacementNamed(context, '/soloMafiaRole', arguments: SoloMafiaRoleArguments(args));
         return;
 
       } else {
-        otherMafiaPlayerName = "The other mafia member is: " + friends[0]; //will only ever be one other mafia or none other...
+        //will only ever be one other mafia or none other...
+        otherMafiaPlayerName = "The other mafia member is: " + friends[0];
       }
 
       setState(() {
-        this.otherMafiaName = otherMafiaPlayerName;
-        this.isContinueButtonEnabled = true;
+        this._otherMafiaName = otherMafiaPlayerName;
+        this._isContinueButtonEnabled = true;
       });
 
     }

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/listRoles.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArgs.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
 import 'package:mafia_app/CivilianStuff/CivilianRole.dart';
 import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'yourRolePage.dart';
-import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
-import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
-import 'MafiaRoleStuff/argsClasses/soloMafiaRoleArgs.dart';
-import 'MafiaRoleStuff/pageClasses/mafiaReveal.dart';
-import 'MafiaRoleStuff/argsClasses/mafiaRevealArgs.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaRolePage.dart';
+import 'MafiaRoleStuff/pageClasses/soloMafiaRolePage.dart';
+import 'MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
+import 'MafiaRoleStuff/pageClasses/mafiaRevealPage.dart';
+import 'MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -46,16 +46,16 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
             break;
           case '/mafiaRole':
-            final MafiaRoleArgs arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => MafiaRole(args: arguments));
+            final MafiaRoleArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => MafiaRolePage(arguments: arguments));
             break;
           case '/soloMafiaRole':
-            final SoloMafiaRoleArgs arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: arguments));
+            final SoloMafiaRoleArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => SoloMafiaRolePage(arguments: arguments));
             break;
           case '/mafiaReveal':
-            final MafiaRevealArgs arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => MafiaReveal(args: arguments));
+            final MafiaRevealArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => MafiaRevealPage(arguments: arguments));
             break;
           case '/yourRolePage':
             final YourRoleArguments arguments = settings.arguments;

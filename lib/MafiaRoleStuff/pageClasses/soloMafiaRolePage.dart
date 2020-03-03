@@ -1,28 +1,24 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRevealArgs.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArgs.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
+import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
 
 
-class SoloMafiaRole extends StatefulWidget {
-  final SoloMafiaRoleArgs args;
+class SoloMafiaRolePage extends StatefulWidget {
+  final SoloMafiaRoleArguments arguments;
 
-  SoloMafiaRole({this.args});
+  SoloMafiaRolePage({this.arguments});
 
   @override
   State<StatefulWidget> createState() {
-    return _SoloMafiaRoleState(args: this.args);
+    return _SoloMafiaRolePageState();
   }
 }
 
-class _SoloMafiaRoleState extends State<SoloMafiaRole> {
-  SoloMafiaRoleArgs args;
-  int roleNum;
-  bool isCardSelected = false;
+class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
+  int _roleNum;
+  bool _isCardSelected = false;
 
-  _SoloMafiaRoleState({this.args});
+  _SoloMafiaRolePageState();
 
   List<bool> isCenterButtonEnabled = [true, true, true];
   @override
@@ -73,14 +69,14 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
       onPressed: this.isCenterButtonEnabled.every((e) => e) ? null : () {
         for (int i = 0; i < 3; i++) {
           if (!this.isCenterButtonEnabled[i]) {
-            this.roleNum = i;
+            this._roleNum = i;
             break;
           }
         }
-        Navigator.pushReplacementNamed(context, '/mafiaReveal', arguments: MafiaRevealArgs(this.args, this.roleNum));
+        Navigator.pushReplacementNamed(context, '/mafiaReveal', arguments: MafiaRevealArguments(widget.arguments, this._roleNum));
         return;
       },
-      child: isCardSelected ? Text("Continue") : Text("Choose a card to see it's role!"),
+      child: _isCardSelected ? Text("Continue") : Text("Choose a card to see it's role!"),
     );
   }
 
@@ -100,7 +96,7 @@ class _SoloMafiaRoleState extends State<SoloMafiaRole> {
     setState(() {
       for (int i = 0; i < 3; i++) {this.isCenterButtonEnabled[i] = true;}
       this.isCenterButtonEnabled[roleNum] = false;
-      this.isCardSelected = true;
+      this._isCardSelected = true;
     });
   }
 }
