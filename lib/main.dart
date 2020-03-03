@@ -9,7 +9,9 @@ import 'gameLobby.dart';
 import 'yourRolePage.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaRole.dart';
 import 'MafiaRoleStuff/pageClasses/soloMafiaRole.dart';
+import 'MafiaRoleStuff/argsClasses/soloMafiaRoleArgs.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaReveal.dart';
+import 'MafiaRoleStuff/argsClasses/mafiaRevealArgs.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
@@ -44,13 +46,16 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
             break;
           case '/mafiaRole':
-            return MaterialPageRoute(builder: (context) => MafiaRole(args: settings.arguments));
+            final MafiaRoleArgs arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => MafiaRole(args: arguments));
             break;
           case '/soloMafiaRole':
-            return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: settings.arguments));
+            final SoloMafiaRoleArgs arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => SoloMafiaRole(args: arguments));
             break;
           case '/mafiaReveal':
-            return MaterialPageRoute(builder: (context) => MafiaReveal(args: settings.arguments));
+            final MafiaRevealArgs arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => MafiaReveal(args: arguments));
             break;
           case '/yourRolePage':
             final YourRoleArguments arguments = settings.arguments;
