@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/createJoinGame.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import "session.dart" as session;
 
 
 class CreateGameResponse {
@@ -105,6 +106,8 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     String startBody = '{"roles": ' + jsonRoles + '}';
     print(startBody);
     Map<String, String> headers = {"Content-type": "application/json"};
+    //recording playerList right before starting game...
+    session.playerList = playerList;
     final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/start/' + gameID, headers: headers, body: startBody);
     if (response.statusCode == 200) {
       print("startGame: " + response.statusCode.toString());
@@ -327,6 +330,9 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     if (response.statusCode == 200) {
       print(response.body.toString());
       JoinGameResponse joinResponse = JoinGameResponse.fromJson(json.decode(response.body));
+      session.playerName = joinResponse.playerName;
+      session.gameID = joinResponse.gameID;
+      session.playerID = joinResponse.playerID;
       print(joinResponse.gameID);
       print(joinResponse.playerName);
       return joinResponse;
@@ -344,6 +350,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
       print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
       print(lobbyState.playerList);
+      session.playerList = lobbyState.playerList;
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page
         _startPlaying(lobbyState, joinResponse);
