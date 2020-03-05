@@ -61,6 +61,9 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
       print(response.statusCode);
       print(response.body.toString());
       CreateGameResponse createGameResponse = CreateGameResponse.fromJson(json.decode(response.body));
+      session.playerID = json.decode(response.body)["hostId"];
+      session.gameID = json.decode(response.body)["gameId"];
+      session.playerName = json.decode(response.body)["hostName"];
       return createGameResponse;
     }
     else {
@@ -129,6 +132,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   void initState() {
     super.initState();
     createGameResponse = _fetchCreateGame();
+//    session.playerID = createGameResponse.playerID;
   }
 
   @override
@@ -333,6 +337,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
       session.playerName = joinResponse.playerName;
       session.gameID = joinResponse.gameID;
       session.playerID = joinResponse.playerID;
+      print("LOOK HERE!!!  ----->    " + session.playerID);
       print(joinResponse.gameID);
       print(joinResponse.playerName);
       return joinResponse;
