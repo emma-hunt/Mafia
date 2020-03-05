@@ -5,9 +5,30 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/createJoinGame.dart';
 
+
+
 class ListRolesArguments{
-  final String roles;
-  ListRolesArguments({this.roles});
+  final List<dynamic> allRoles;
+  var roles = new List();
+  ListRolesArguments(this.allRoles){
+    //allRoles.sort((a, b) => a.toString().compareTo(b.toString()));
+
+    String tmpRole = "";
+    int counter = 0;
+    for(var role in allRoles){
+      this.roles.add(role);
+      /*
+      if(role != tmpRole){
+        roles.add(role + " x" + counter);
+        counter = 0;
+        tmpRole = role;
+      }
+      else{
+        counter++;
+      }
+      */
+    }
+  }
 }
 
 class ListRolesPage extends StatefulWidget {
@@ -35,8 +56,7 @@ class _ListRolesPageState extends State<ListRolesPage> {
                     Container(
                       child: RaisedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/yourRolePage');
+                          Navigator.pop(context);
                         },
                         child: Text('Your Role'),
                       ),
@@ -45,22 +65,18 @@ class _ListRolesPageState extends State<ListRolesPage> {
                       child: RaisedButton(
                         onPressed: () {
                           // Does nothing: stay on the same page
-                          //Navigator.pushReplacementNamed(context, '/listRoles');
                         },
-                        child: Text('Roles'),
+                        child: Text('All Roles'),
                       ),
                     ),
                   ],
                 ),
+                Column(children: <Widget>[ Text(widget.args.roles.toString()), for(String role in widget.args.allRoles) Text (role) ]),
                 RaisedButton(
                   onPressed: () {
-                    Fluttertoast.showToast(
-                      msg: "take you to next screen",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                    );
-                  },
-                  child: Text('time to sleep...'),
+                    Navigator.pop(context);
+                  }, 
+                  child: Text('back to role'),
                   //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
                 )
               ]),

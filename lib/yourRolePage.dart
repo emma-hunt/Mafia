@@ -37,9 +37,9 @@ class YourRolePage extends StatefulWidget {
   _YourRolePageState createState() => _YourRolePageState();
 }
 
-
 class _YourRolePageState extends State<YourRolePage> {
   Future<PlayerRoleResponse> playerRole;
+  List<dynamic> listRoles;
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
@@ -82,7 +82,6 @@ class _YourRolePageState extends State<YourRolePage> {
                   child: RaisedButton(
                     onPressed: () {
                       // Does nothing, stay on the same page
-                      //Navigator.pushReplacementNamed(context, '/yourRolePage');
                     },
                     child: Text('Your Role'),
                   ),
@@ -90,9 +89,9 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ListRolesArguments());
+                      Navigator.pushNamed(context, '/listRoles', arguments: ListRolesArguments(this.listRoles));
                       },
-                    child: Text('Roles'),
+                    child: Text('All Roles'),
                   ),
                 ),
               ],
@@ -112,6 +111,7 @@ class _YourRolePageState extends State<YourRolePage> {
                   builder: (context, snapshot){
                     if(snapshot.hasData){
                       print("role data received");
+                      this.listRoles = snapshot.data.allRoles;
                       return Text(snapshot.data.role);
                     }
                     else if (snapshot.hasError){
