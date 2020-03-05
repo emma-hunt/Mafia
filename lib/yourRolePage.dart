@@ -39,7 +39,9 @@ class YourRolePage extends StatefulWidget {
 
 class _YourRolePageState extends State<YourRolePage> {
   Future<PlayerRoleResponse> playerRole;
+  String role;
   List<dynamic> listRoles;
+  bool dataReady = false; // has the role been retrieved
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
@@ -50,7 +52,7 @@ class _YourRolePageState extends State<YourRolePage> {
 
       PlayerRoleResponse playerRole = PlayerRoleResponse.fromJson(json.decode(response.body));
       print("YourRolePage: role: " + playerRole.role);
-
+      this.dataReady = true;
       return playerRole;
     }
     else {
@@ -112,7 +114,8 @@ class _YourRolePageState extends State<YourRolePage> {
                     if(snapshot.hasData){
                       print("role data received");
                       this.listRoles = snapshot.data.allRoles;
-                      return Text(snapshot.data.role);
+                      this.role = snapshot.data.role;
+                      return Text(this.role);
                     }
                     else if (snapshot.hasError){
                       return Text("${snapshot.error}");
@@ -128,11 +131,27 @@ class _YourRolePageState extends State<YourRolePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Fluttertoast.showToast(
-                  msg: "take you to next screen",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                );
+                if(!this.dataReady){
+                  Fluttertoast.showToast(
+                    msg: "waiting for your role!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                }
+                else{
+                  switch(this.role){
+                    case "mafia": 
+                        break;
+                    case "civilian":
+                        break;
+                    default:
+                      Fluttertoast.showToast(
+                        msg: "mmmh I don't know this role: " + this.role,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                      );
+                  }
+                }
               },
               child: Text('time to sleep...'),
               //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
