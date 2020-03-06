@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:mafia_app/CivilianStuff/CivilianRoleArgs.dart";
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CivilianRole extends StatefulWidget {
   final CivilianRoleArgs args;

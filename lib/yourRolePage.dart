@@ -1,21 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
 import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
-import 'package:mafia_app/createJoinGame.dart';
 import 'package:mafia_app/listRoles.dart';
-
-class YourRoleArguments {
-  final String playerName;
-  final String playerID;
-  final String gameID;
-  final List<dynamic> playerList;
-  final bool isOwner;
-
-  YourRoleArguments(this.playerName, this.playerID, this.gameID, this.playerList, this.isOwner);
-}
+import 'package:mafia_app/session.dart' as session;
 
 class PlayerRoleResponse{
   final String role;
@@ -30,9 +19,8 @@ class PlayerRoleResponse{
 }
 
 class YourRolePage extends StatefulWidget {
-  final YourRoleArguments args;
 
-  YourRolePage({this.args});
+  YourRolePage();
 
   @override
   _YourRolePageState createState() => _YourRolePageState();
@@ -45,9 +33,10 @@ class _YourRolePageState extends State<YourRolePage> {
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
-                                    + widget.args.gameID + '/' + widget.args.playerID);
+                                    + session.gameID + '/' + session.playerID);
     if (response.statusCode == 200) {
       print("YourRolePage: PlayerRole response code: " + response.statusCode.toString());
+      print("isOwner: " + session.isOwner.toString());
       print("YourRolePage: body: " + response.body.toString());
 
       PlayerRoleResponse playerRole = PlayerRoleResponse.fromJson(json.decode(response.body));
@@ -135,14 +124,14 @@ class _YourRolePageState extends State<YourRolePage> {
                 switch (this._role) {
                   case "mafia" :
                     print("mafia switch");
-                    MafiaRoleArguments args = MafiaRoleArguments(personId: widget.args.playerID, personName: widget.args.playerName,
-                                                       gameId: widget.args.gameID);
+                    MafiaRoleArguments args = MafiaRoleArguments(personId: session.playerID, personName: session.playerName,
+                                                       gameId: session.gameID);
                     Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
                     break;
                   case "civilian" :
                     print("civilian switch");
-                    CivilianRoleArgs args = CivilianRoleArgs(personId: widget.args.playerID, personName: widget.args.playerName,
-                                                             gameId: widget.args.gameID);
+                    CivilianRoleArgs args = CivilianRoleArgs(personId: session.playerID, personName: session.playerName,
+                                                             gameId: session.gameID);
                     Navigator.pushReplacementNamed(context, '/civilianRole', arguments: args);
                     break;
                 }
