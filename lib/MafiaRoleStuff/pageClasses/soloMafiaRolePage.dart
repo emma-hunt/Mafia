@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
-
+import 'package:mafia_app/session.dart' as session;
 
 class SoloMafiaRolePage extends StatefulWidget {
-  final SoloMafiaRoleArguments arguments;
 
-  SoloMafiaRolePage({this.arguments});
+  SoloMafiaRolePage();
 
   @override
   State<StatefulWidget> createState() {
@@ -73,7 +70,8 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
             break;
           }
         }
-        Navigator.pushReplacementNamed(context, '/mafiaReveal', arguments: MafiaRevealArguments(widget.arguments, this._roleNum));
+        session.cardNumber = _roleNum;
+        Navigator.pushReplacementNamed(context, '/mafiaReveal');
         return;
       },
       child: _isCardSelected ? Text("Continue") : Text("Choose a card to see it's role!"),

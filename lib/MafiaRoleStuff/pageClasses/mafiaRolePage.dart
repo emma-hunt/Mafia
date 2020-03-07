@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
+import 'package:mafia_app/session.dart' as session;
 
 
 class MafiaRolePage extends StatefulWidget {
-  final MafiaRoleArguments arguments;
 
-  MafiaRolePage({this.arguments});
+  MafiaRolePage();
 
   @override
   State<StatefulWidget> createState() {
@@ -59,13 +57,13 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
   @override
   void initState() {
     super.initState();
-    getOtherMafiaName(widget.arguments);
+    getOtherMafiaName();
   }
 
-  void getOtherMafiaName(MafiaRoleArguments args) async {
+  void getOtherMafiaName() async {
 
     String url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
-    String body = '{"personId": "' + args.personId + '", "gameId": "' + args.gameId + '", "role": "mafia"}';
+    String body = '{"personId": "' + session.playerID + '", "gameId": "' + session.gameID + '", "role": "mafia"}';
     final response = await http.put(url, body: body);
     if (response.statusCode == 200) {
       print("getOtherMafiaMemberName : " + response.statusCode.toString() + " : " + response.body.toString());
@@ -79,14 +77,14 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
       List<String> friends = [];
 
       for (dynamic member in mafiaMembers) {
-        if (member != args.personName) {
+        if (member != session.playerName) {
           friends.add(member.toString());
         }
       }
 
       String otherMafiaPlayerName = "";
       if (friends.isEmpty) {
-        Navigator.pushReplacementNamed(context, '/soloMafiaRole', arguments: SoloMafiaRoleArguments(args));
+        Navigator.pushReplacementNamed(context, '/soloMafiaRole');
         return;
 
       } else {

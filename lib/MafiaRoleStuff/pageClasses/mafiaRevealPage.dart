@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
 import "package:mafia_app/session.dart" as session;
 
 class MafiaRevealPage extends StatefulWidget {
-  final MafiaRevealArguments arguments;
 
-  MafiaRevealPage({this.arguments});
+  MafiaRevealPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -68,7 +66,7 @@ class _MafiaRevealPageState extends State<MafiaRevealPage> {
     print("PlayerID:");
     print(session.playerID);
     String url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/'
-                  + widget.arguments.gameId + '/' + (widget.arguments.roleNum + 1).toString()
+                  + session.gameID + '/' + (session.cardNumber + 1).toString()
                   + "/" + session.playerID;
     print("url:" + url);
     final response = await http.get(url);

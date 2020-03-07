@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
 import 'package:mafia_app/listRoles.dart';
 import 'package:mafia_app/session.dart' as session;
 
@@ -124,9 +123,7 @@ class _YourRolePageState extends State<YourRolePage> {
                 switch (this._role) {
                   case "mafia" :
                     print("mafia switch");
-                    MafiaRoleArguments args = MafiaRoleArguments(personId: session.playerID, personName: session.playerName,
-                                                       gameId: session.gameID);
-                    Navigator.pushReplacementNamed(context, '/mafiaRole', arguments: args);
+                    Navigator.pushReplacementNamed(context, '/mafiaRole');
                     break;
                   case "civilian" :
                     print("civilian switch");
