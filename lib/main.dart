@@ -12,7 +12,7 @@ import 'MafiaRoleStuff/pageClasses/soloMafiaRolePage.dart';
 import 'MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
 import 'MafiaRoleStuff/pageClasses/mafiaRevealPage.dart';
 import 'MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
-import 'package:http/http.dart' as http;
+import 'package:mafia_app/session.dart' as session;
 
 void main() => runApp(MyApp());
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mafia',
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
@@ -38,12 +38,10 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => JoinGamePage());
             break;
           case '/creatorGameLobby':
-            final CreateGameArguments arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => CreatorGameLobbyPage(args: arguments));
+            return MaterialPageRoute(builder: (context) => CreatorGameLobbyPage());
             break;
           case '/joinerGameLobby':
-            final JoinGameArguments arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage(args: arguments));
+            return MaterialPageRoute(builder: (context) => JoinerGameLobbyPage());
             break;
           case '/mafiaRole':
             final MafiaRoleArguments arguments = settings.arguments;
@@ -58,8 +56,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => MafiaRevealPage(arguments: arguments));
             break;
           case '/yourRolePage':
-            final YourRoleArguments arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => YourRolePage(args: arguments));
+            return MaterialPageRoute(builder: (context) => YourRolePage());
             break;
           case '/listRoles':
             final ListRolesArguments arguments = settings.arguments;
@@ -78,8 +75,9 @@ class MyApp extends StatelessWidget {
 }
 
 class WelcomePage extends StatefulWidget {
-  WelcomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  WelcomePage({Key key, this.title}) : super(key: key);
 
   @override
   _WelcomePageState createState() => _WelcomePageState();
@@ -129,5 +127,11 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    session.resetSession();
   }
 }

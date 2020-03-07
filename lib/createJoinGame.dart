@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-
-class CreateGameArguments{
-  final String playerName;
-
-  CreateGameArguments(this.playerName);
-}
+import 'package:mafia_app/session.dart' as session;
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -15,7 +9,6 @@ class CreateGamePage extends StatefulWidget {
 }
 
 class _CreateGamePageState extends State<CreateGamePage> {
-  var playerName;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +22,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
           Container(
             child: TextField(
               onChanged: (String value) {
-                playerName = value;
+                session.playerName = value;
               },
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -42,7 +35,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
           Container (
             child: RaisedButton(
               onPressed: () {
-                if (playerName == null) {
+                if (session.playerName == "") {
                   Fluttertoast.showToast(
                     msg: "You must enter a name",
                     toastLength: Toast.LENGTH_SHORT,
@@ -50,7 +43,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/creatorGameLobby', arguments: CreateGameArguments(playerName));
+                  Navigator.pushReplacementNamed(context, '/creatorGameLobby');
                 }
               },
               child: Text('Submit'),
@@ -62,12 +55,6 @@ class _CreateGamePageState extends State<CreateGamePage> {
   }
 }
 
-class JoinGameArguments {
-  final String playerName;
-  final String gameCode;
-
-  JoinGameArguments(this.playerName, this.gameCode);
-}
 
 class JoinGamePage extends StatefulWidget {
   @override
@@ -76,8 +63,6 @@ class JoinGamePage extends StatefulWidget {
 }
 
 class _JoinGamePageState extends State<JoinGamePage> {
-  var playerName;
-  var gameCode;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +76,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
           Container (
             child: TextField(
               onChanged: (String value) {
-                gameCode = value;
+                session.gameID = value;
               },
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -104,7 +89,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
           Container (
             child: TextField(
               onChanged: (String value) {
-                playerName = value;
+                session.playerName = value;
               },
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -117,21 +102,21 @@ class _JoinGamePageState extends State<JoinGamePage> {
           Container (
             child: RaisedButton(
               onPressed: () {
-                if (playerName == null && gameCode == null) {
+                if (session.playerName == null && session.gameID == null) {
                   Fluttertoast.showToast(
                     msg: "You must enter a name and game code",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                   );
                 }
-                else if (playerName == null) {
+                else if (session.playerName == null) {
                   Fluttertoast.showToast(
                     msg: "You must enter a name",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                   );
                 }
-                else if (gameCode == null) {
+                else if (session.gameID == null) {
                   Fluttertoast.showToast(
                     msg: "You must enter a game code",
                     toastLength: Toast.LENGTH_SHORT,
@@ -139,7 +124,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/joinerGameLobby', arguments: JoinGameArguments(playerName, gameCode));
+                  Navigator.pushReplacementNamed(context, '/joinerGameLobby');
                 }
               },
               child: Text('Submit'),

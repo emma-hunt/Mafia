@@ -4,4 +4,13 @@ library mafia.session;
 String playerName = '';
 String gameID = '';
 String playerID = '';
+bool isOwner = false;
 List<dynamic> playerList = [];
+
+void resetSession() {
+  playerName = '';
+  gameID = '';
+  playerID = '';
+  isOwner = false;
+  playerList = [];
+}
