@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
-import 'package:mafia_app/listRoles.dart';
 import 'package:mafia_app/session.dart' as session;
 
 class PlayerRoleResponse{
@@ -81,7 +79,7 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ListRolesArguments());
+                      Navigator.pushReplacementNamed(context, '/listRoles');
                       },
                     child: Text('Roles'),
                   ),
@@ -127,9 +125,7 @@ class _YourRolePageState extends State<YourRolePage> {
                     break;
                   case "civilian" :
                     print("civilian switch");
-                    CivilianRoleArgs args = CivilianRoleArgs(personId: session.playerID, personName: session.playerName,
-                                                             gameId: session.gameID);
-                    Navigator.pushReplacementNamed(context, '/civilianRole', arguments: args);
+                    Navigator.pushReplacementNamed(context, '/civilianRole');
                     break;
                 }
               },

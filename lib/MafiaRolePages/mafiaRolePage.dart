@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mafia_app/session.dart' as session;
 
-
 class MafiaRolePage extends StatefulWidget {
 
   MafiaRolePage();
@@ -46,6 +45,7 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
       padding: EdgeInsets.all(8.0),
       splashColor: Colors.redAccent[700],
       onPressed: () {
+        // This will eventually route to the next part of the app. Not yet ready.
         Navigator.pushReplacementNamed(context, '/');
       },
       child: Text(
@@ -57,50 +57,48 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
   @override
   void initState() {
     super.initState();
-    getOtherMafiaName();
+    _getOtherMafiaName();
   }
 
-  void getOtherMafiaName() async {
+  void _getOtherMafiaName() async {
 
-    String url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
-    String body = '{"personId": "' + session.playerID + '", "gameId": "' + session.gameID + '", "role": "mafia"}';
-    final response = await http.put(url, body: body);
-    if (response.statusCode == 200) {
-      print("getOtherMafiaMemberName : " + response.statusCode.toString() + " : " + response.body.toString());
+    String _url = "https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/friends";
+    String _body = '{"personId": "' + session.playerID + '", "gameId": "' + session.gameID + '", "role": "mafia"}';
+    final _response = await http.put(_url, body: _body);
+    if (_response.statusCode == 200) {
+      List<dynamic> _mafiaMembers = jsonDecode(_response.body)["friends"];
 
-      List<dynamic> mafiaMembers = jsonDecode(response.body)["friends"];
-
-      if (mafiaMembers.isEmpty) {
+      if (_mafiaMembers.isEmpty) {
         throw Exception('ERROR: no mafia members listed??');
       }
 
-      List<String> friends = [];
+      List<String> _friends = [];
 
-      for (dynamic member in mafiaMembers) {
+      for (dynamic member in _mafiaMembers) {
         if (member != session.playerName) {
-          friends.add(member.toString());
+          _friends.add(member.toString());
         }
       }
 
-      String otherMafiaPlayerName = "";
-      if (friends.isEmpty) {
+      String _otherMafiaPlayerName = "";
+      if (_friends.isEmpty) {
         Navigator.pushReplacementNamed(context, '/soloMafiaRole');
         return;
 
       } else {
         //will only ever be one other mafia or none other...
-        otherMafiaPlayerName = "The other mafia member is: " + friends[0];
+        _otherMafiaPlayerName = "The other mafia member is: " + _friends[0];
       }
 
       setState(() {
-        this._otherMafiaName = otherMafiaPlayerName;
+        this._otherMafiaName = _otherMafiaPlayerName;
         this._isContinueButtonEnabled = true;
       });
 
     }
     else {
-      print(response.statusCode);
-      print(response.body.toString());
+      print(_response.statusCode);
+      print(_response.body.toString());
       throw Exception('ERROR: getOtherMafiaMemeberName failed.');
     }
   }

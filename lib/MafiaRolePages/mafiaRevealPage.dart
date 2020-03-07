@@ -16,8 +16,6 @@ class MafiaRevealPage extends StatefulWidget {
 class _MafiaRevealPageState extends State<MafiaRevealPage> {
   String _roleToReveal = "loading...";
 
-  _MafiaRevealPageState();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +47,7 @@ class _MafiaRevealPageState extends State<MafiaRevealPage> {
       padding: EdgeInsets.all(8.0),
       splashColor: Colors.redAccent[700],
       onPressed: () {
+        // This button will eventually route to the next part of the game... not there yet.
         Navigator.pushReplacementNamed(context, '/');
         return;
       },
@@ -63,22 +62,18 @@ class _MafiaRevealPageState extends State<MafiaRevealPage> {
   }
 
   void _getRoleToReveal() async {
-    print("PlayerID:");
-    print(session.playerID);
-    String url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/'
+    String _url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/'
                   + session.gameID + '/' + (session.cardNumber + 1).toString()
                   + "/" + session.playerID;
-    print("url:" + url);
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      print("getRoleToReveal : " + response.statusCode.toString() + " : " + response.body.toString());
+    final dynamic _response = await http.get(_url);
+    if (_response.statusCode == 200) {
       setState(() {
-        this._roleToReveal = "The role is " + jsonDecode(response.body)["role"] + "!";
+        this._roleToReveal = "The role is " + jsonDecode(_response.body)["role"] + "!";
       });
     }
     else {
-      print('Center Card Role Reveal API: ' + response.statusCode.toString());
-      print(response.body.toString());
+      print('ERROR: Center Card Role Reveal API: ' + _response.statusCode.toString());
+      print(_response.body.toString());
       setState(() {
         this._roleToReveal = 'ERROR: unable to retrieve center card role for solo mafia role/mafia reveal';
       });

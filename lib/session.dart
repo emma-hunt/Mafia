@@ -14,4 +14,5 @@ void resetSession() {
   playerID = '';
   isOwner = false;
   playerList = [];
+  cardNumber = -1;
 }

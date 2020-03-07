@@ -3,9 +3,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/session.dart' as session;
 
 class CreateGamePage extends StatefulWidget {
+
   @override
   _CreateGamePageState createState() => _CreateGamePageState();
-
 }
 
 class _CreateGamePageState extends State<CreateGamePage> {
@@ -57,9 +57,9 @@ class _CreateGamePageState extends State<CreateGamePage> {
 
 
 class JoinGamePage extends StatefulWidget {
+
   @override
   _JoinGamePageState createState() => _JoinGamePageState();
-
 }
 
 class _JoinGamePageState extends State<JoinGamePage> {
@@ -102,21 +102,21 @@ class _JoinGamePageState extends State<JoinGamePage> {
           Container (
             child: RaisedButton(
               onPressed: () {
-                if (session.playerName == null && session.gameID == null) {
+                if (session.playerName == "" && session.gameID == "") {
                   Fluttertoast.showToast(
                     msg: "You must enter a name and game code",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                   );
                 }
-                else if (session.playerName == null) {
+                else if (session.playerName == "") {
                   Fluttertoast.showToast(
                     msg: "You must enter a name",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                   );
                 }
-                else if (session.gameID == null) {
+                else if (session.gameID == "") {
                   Fluttertoast.showToast(
                     msg: "You must enter a game code",
                     toastLength: Toast.LENGTH_SHORT,

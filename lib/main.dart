@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/listRoles.dart';
-import 'package:mafia_app/MafiaRoleStuff/argsClasses/mafiaRoleArguments.dart';
-import 'package:mafia_app/CivilianStuff/CivilianRole.dart';
-import 'package:mafia_app/CivilianStuff/CivilianRoleArgs.dart';
+import 'package:mafia_app/CivilianRole.dart';
 import 'createJoinGame.dart';
 import 'gameLobby.dart';
 import 'yourRolePage.dart';
-import 'MafiaRoleStuff/pageClasses/mafiaRolePage.dart';
-import 'MafiaRoleStuff/pageClasses/soloMafiaRolePage.dart';
-import 'MafiaRoleStuff/argsClasses/soloMafiaRoleArguments.dart';
-import 'MafiaRoleStuff/pageClasses/mafiaRevealPage.dart';
-import 'MafiaRoleStuff/argsClasses/mafiaRevealArguments.dart';
+import 'MafiaRolePages/mafiaRolePage.dart';
+import 'MafiaRolePages/soloMafiaRolePage.dart';
+import 'MafiaRolePages/mafiaRevealPage.dart';
 import 'package:mafia_app/session.dart' as session;
 
 void main() => runApp(MyApp());
@@ -59,7 +55,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => ListRolesPage());
             break;
           case '/civilianRole':
-            return MaterialPageRoute(builder: (context) => CivilianRole());
+            return MaterialPageRoute(builder: (context) => CivilianRolePage());
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));

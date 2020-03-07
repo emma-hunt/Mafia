@@ -1,17 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import "package:mafia_app/CivilianStuff/CivilianRoleArgs.dart";
 
-class CivilianRole extends StatefulWidget {
-  final CivilianRoleArgs args;
+class CivilianRolePage extends StatefulWidget {
 
-  CivilianRole({this.args});
+  CivilianRolePage();
 
   @override
-  _CivilianRoleState createState() => _CivilianRoleState();
+  _CivilianRolePageState createState() => _CivilianRolePageState();
 }
 
-class _CivilianRoleState extends State<CivilianRole> {
+class _CivilianRolePageState extends State<CivilianRolePage> {
 
   @override
   Widget build(BuildContext context) {

@@ -14,10 +14,8 @@ class SoloMafiaRolePage extends StatefulWidget {
 class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
   int _roleNum;
   bool _isCardSelected = false;
+  List<bool> _isCenterButtonEnabled = [true, true, true];
 
-  _SoloMafiaRolePageState();
-
-  List<bool> isCenterButtonEnabled = [true, true, true];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,13 +47,7 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget _buildContinueButton() {
-
     return FlatButton (
       color: Colors.red[900],
       textColor: Colors.white,
@@ -63,9 +55,9 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
       disabledTextColor: Colors.black,
       padding: EdgeInsets.all(8.0),
       splashColor: Colors.redAccent[700],
-      onPressed: this.isCenterButtonEnabled.every((e) => e) ? null : () {
+      onPressed: this._isCenterButtonEnabled.every((e) => e) ? null : () {
         for (int i = 0; i < 3; i++) {
-          if (!this.isCenterButtonEnabled[i]) {
+          if (!this._isCenterButtonEnabled[i]) {
             this._roleNum = i;
             break;
           }
@@ -85,15 +77,15 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
       disabledColor: Colors.blueGrey,
       disabledTextColor: Colors.white,
       padding: EdgeInsets.all(8.0),
-      onPressed: this.isCenterButtonEnabled[roleNum] ? () => _centerButtonClicked(roleNum) : null,
+      onPressed: this._isCenterButtonEnabled[roleNum] ? () => _centerButtonClicked(roleNum) : null,
       child: Text("Center Card " + (roleNum + 1).toString()), // plus 1 to convert card number from 0 based to 1 based
     );
   }
 
   void _centerButtonClicked(int roleNum) {
     setState(() {
-      for (int i = 0; i < 3; i++) {this.isCenterButtonEnabled[i] = true;}
-      this.isCenterButtonEnabled[roleNum] = false;
+      for (int i = 0; i < 3; i++) {this._isCenterButtonEnabled[i] = true;}
+      this._isCenterButtonEnabled[roleNum] = false;
       this._isCardSelected = true;
     });
   }
