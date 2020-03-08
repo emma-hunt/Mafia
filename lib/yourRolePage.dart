@@ -79,7 +79,7 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles');
+                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ["mafia", "civilian"]);
                       },
                     child: Text('Roles'),
                   ),
