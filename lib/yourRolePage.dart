@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mafia_app/listRoles.dart';
 import 'package:mafia_app/session.dart' as session;
 
 class PlayerRoleResponse{
@@ -79,7 +80,8 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ["mafia", "civilian"]);
+                      ListRolesArguments arguments = ListRolesArguments(["mafia", "civilian"]);
+                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: arguments);
                       },
                     child: Text('Roles'),
                   ),

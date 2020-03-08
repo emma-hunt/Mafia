@@ -62,8 +62,7 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
             break;
           }
         }
-        session.cardNumber = _roleNum;
-        Navigator.pushReplacementNamed(context, '/mafiaReveal');
+        Navigator.pushReplacementNamed(context, '/mafiaReveal', arguments: _roleNum);
         return;
       },
       child: _isCardSelected ? Text("Continue") : Text("Choose a card to see it's role!"),

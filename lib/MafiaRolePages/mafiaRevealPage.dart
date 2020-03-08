@@ -3,9 +3,17 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import "package:mafia_app/session.dart" as session;
 
+class MafiaRevealPageArguments {
+  final int cardNumber;
+
+  MafiaRevealPageArguments(this.cardNumber);
+}
+
 class MafiaRevealPage extends StatefulWidget {
 
-  MafiaRevealPage();
+  final MafiaRevealPageArguments arguments;
+
+  MafiaRevealPage(this.arguments);
 
   @override
   State<StatefulWidget> createState() {
@@ -63,7 +71,7 @@ class _MafiaRevealPageState extends State<MafiaRevealPage> {
 
   void _getRoleToReveal() async {
     String _url = 'https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/mafia/'
-                  + session.gameID + '/' + (session.cardNumber + 1).toString()
+                  + session.gameID + '/' + (widget.arguments.cardNumber + 1).toString()
                   + "/" + session.playerID;
     final dynamic _response = await http.get(_url);
     if (_response.statusCode == 200) {

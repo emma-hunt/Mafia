@@ -5,7 +5,6 @@ String playerName = '';
 String gameID = '';
 String playerID = '';
 bool isOwner = false;
-int cardNumber = -1;
 List<dynamic> playerList = [];
 
 void resetSession() {
@@ -14,5 +13,4 @@ void resetSession() {
   playerID = '';
   isOwner = false;
   playerList = [];
-  cardNumber = -1;
 }

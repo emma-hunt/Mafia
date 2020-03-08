@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ListRolesArguments{
-  final String roles;
-  ListRolesArguments({this.roles});
+  final List<String> roles;
+  ListRolesArguments(this.roles);
 }
 
 class ListRolesPage extends StatefulWidget {
