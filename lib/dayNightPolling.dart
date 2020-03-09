@@ -248,15 +248,11 @@ class _DayPollingPageState extends State<DayPollingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
+                padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
                 child: Text("Talk with the other players to try and determine their roles."),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
-                child: Text(""),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
+                padding: EdgeInsets.fromLTRB(50, 10, 50, 50),
                 child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
               ),
               RaisedButton(
@@ -280,15 +276,11 @@ class _DayPollingPageState extends State<DayPollingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
+                padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
                 child: Text("Talk with the other players to try and determine their roles. Voting will commence when the game owner decides the group is ready."),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
-                child: Text(""),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
+                padding: EdgeInsets.fromLTRB(50, 10, 50, 50),
                 child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
               ),
             ],
