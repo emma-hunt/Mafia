@@ -127,6 +127,7 @@ class _WelcomePageState extends State<WelcomePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
+                session.playerList = ["zack", "francois", "emma"];
                 Navigator.pushReplacementNamed(context, '/vote');
               },
               child: Text(
