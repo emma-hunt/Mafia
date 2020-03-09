@@ -56,7 +56,7 @@ class _MafiaRevealPageState extends State<MafiaRevealPage> {
       splashColor: Colors.redAccent[700],
       onPressed: () {
         // This button will eventually route to the next part of the game... not there yet.
-        Navigator.pushReplacementNamed(context, '/');
+        Navigator.pushReplacementNamed(context, '/nightPolling');
         return;
       },
       child: Text('Continue'),
