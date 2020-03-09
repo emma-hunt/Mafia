@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => SoloMafiaRolePage());
             break;
           case '/mafiaReveal':
-            MafiaRevealPageArguments arguments = settings.arguments;
+            MafiaRevealPageArguments arguments = MafiaRevealPageArguments(settings.arguments);
             return MaterialPageRoute(builder: (context) => MafiaRevealPage(arguments));
             break;
           case '/yourRolePage':
