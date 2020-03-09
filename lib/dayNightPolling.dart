@@ -68,10 +68,10 @@ class _NightPollingPageState extends State<NightPollingPage> {
       return nightState;
     }
     else {
-      print("failure in lobby polling");
+      print("failure in night polling");
       print(response.statusCode);
       print(response.body);
-      throw Exception('Unable to get Lobby State');
+      throw Exception('Unable to get Night State');
     }
   }
 
@@ -160,7 +160,7 @@ class DayStateResponse {
 
   factory DayStateResponse.fromJson(Map<String, dynamic> json) {
     return DayStateResponse(
-      isDayOver: json['areAllActionsComplete'],
+      isDayOver: json['readyToVote'],
     );
   }
 }
@@ -174,34 +174,128 @@ class _DayPollingPageState extends State<DayPollingPage> {
   Timer timer;
   Future<DayStateResponse> dayStateResponse;
 
+  Future<DayStateResponse> _fetchDayState() async {
+    final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/vote/status/' + session.gameID);
+    print("day poll");
+    if (response.statusCode == 200) {
+      DayStateResponse dayState = DayStateResponse.fromJson(json.decode(response.body));
+      if(dayState.isDayOver) {
+        // game is started, time to move to the next page
+        _moveToVoting();
+      }
+      return dayState;
+    }
+    else {
+      print("failure in day polling");
+      print(response.statusCode);
+      print(response.body);
+      throw Exception('Unable to get Day State');
+    }
+  }
+
+  void _startVotingPost() async{
+    final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/vote/status/' + session.gameID);
+    if (response.statusCode == 200) {
+      print("start voting: " + response.statusCode.toString());
+      print(response.body.toString());
+    }
+    else {
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception('Unable to start voting');
+    }
+  }
+
+  void _pollDayState() async {
+    setState(() {
+      this.dayStateResponse = _fetchDayState();
+    });
+  }
+
+  void _moveToVoting() {
+    //TODO: reroute to voting page
+    Navigator.pushReplacementNamed(context, '/');
+  }
+
+  @override
+  void deactivate() {
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Day"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Text("Talk with the other players to try and determine their roles. Voting will commence when the game owner decides the group is ready."),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Continue'),
-            ),
-          ],
+    timer = Timer(Duration(seconds: 5), () => _pollDayState());
+    if(session.isOwner) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Day"),
         ),
-      ),
-    );
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text("Talk with the other players to try and determine their roles."),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text(""),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  _startVotingPost();
+                },
+                child: Text('All Players are ready to Vote'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Day"),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text("Talk with the other players to try and determine their roles. Voting will commence when the game owner decides the group is ready."),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text(""),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
 }
