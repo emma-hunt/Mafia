@@ -8,6 +8,7 @@ import 'yourRolePage.dart';
 import 'MafiaRolePages/mafiaRolePage.dart';
 import 'MafiaRolePages/soloMafiaRolePage.dart';
 import 'MafiaRolePages/mafiaRevealPage.dart';
+import 'votePage.dart';
 import 'package:mafia_app/session.dart' as session;
 
 void main() => runApp(MyApp());
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
             break;
           case '/civilianRole':
             return MaterialPageRoute(builder: (context) => CivilianRolePage());
+            break;
+          case '/vote':
+            return MaterialPageRoute(builder: (context) => VotePage());
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
@@ -113,6 +117,20 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               child: Text(
                 "Join Game",
+              ),
+            ),
+            FlatButton (
+              color: Colors.red[900],
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.redAccent[700],
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/vote');
+              },
+              child: Text(
+                "Vote",
               ),
             ),
           ],
