@@ -42,7 +42,7 @@ class _NightPollingPageState extends State<NightPollingPage> {
   Future<NightStateResponse> nightStateResponse;
 
   Future<ActionCompleteResponse> _postActionComplete() async {
-    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/' + session.gameID + '/' + session.playerID);
+    final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/' + session.gameID + '/' + session.playerID);
     if (response.statusCode == 200) {
       print(response.statusCode);
       print(response.body.toString());
@@ -58,6 +58,7 @@ class _NightPollingPageState extends State<NightPollingPage> {
 
   Future<NightStateResponse> _fetchNightState() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + session.gameID + '/actions');
+    print("night poll");
     if (response.statusCode == 200) {
       NightStateResponse nightState = NightStateResponse.fromJson(json.decode(response.body));
       if(nightState.isNightOver) {
@@ -74,7 +75,7 @@ class _NightPollingPageState extends State<NightPollingPage> {
     }
   }
 
-  void _pollNightState(NightStateResponse nightStateResponse) async {
+  void _pollNightState() async {
     setState(() {
       this.nightStateResponse = _fetchNightState();
     });
@@ -122,8 +123,11 @@ class _NightPollingPageState extends State<NightPollingPage> {
               future: actionCompleteResponse,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                  timer = Timer(Duration(seconds: 5), () => _fetchNightState());
-                  return Text("Please wait for other players to complete thier role action. You will be moved forward once everyone is done.");
+                  timer = Timer(Duration(seconds: 5), () => _pollNightState());
+                  return Container(
+                    padding: EdgeInsets.all(50),
+                    child: Text("Please wait for other players to complete thier role action. You will be moved forward once everyone is done."),
+                  );
                 }
                 else if (snapshot.hasError) {
                   return Column (
@@ -180,8 +184,14 @@ class _DayPollingPageState extends State<DayPollingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Talk with the other players to try and determine their roles. Voting will commence when the game owner decides the group is ready."),
-            Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: Text("Talk with the other players to try and determine their roles. Voting will commence when the game owner decides the group is ready."),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: Text("Hint: If you are a civilian, your goal is to kill a mafia member. If you are a mafia member, your goal is to kill a civilian."),
+            ),
             RaisedButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/');
