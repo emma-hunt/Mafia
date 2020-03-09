@@ -11,7 +11,7 @@ class VotePage extends StatefulWidget {
 }
 
 class _VotePageState extends State<VotePage> {
-  List<bool> _isCandidateSelected = [false, false, false];
+  List<bool> _isCandidateSelected = [];
 
   @override
   Widget build(BuildContext context) {
@@ -88,38 +88,12 @@ class _VotePageState extends State<VotePage> {
       this._isCandidateSelected[index] = true;
     });
   }
-}
 
-/*
-class DyanmicList extends State<ListDisplay> {
-  List<String> litems = [];
-  final TextEditingController eCtrl = new TextEditingController();
   @override
-  Widget build (BuildContext ctxt) {
-    return new Scaffold(
-      appBar: new AppBar(title: new Text("Dynamic Demo"),),
-      body: new Column(
-        children: <Widget>[
-          new TextField(
-            controller: eCtrl,
-            onSubmitted: (text) {
-              litems.add(text);
-              eCtrl.clear();
-              setState(() {});
-            },
-          ),
-          new Expanded(
-            child: new ListView.builder
-              (
-                itemCount: litems.length,
-                itemBuilder: (BuildContext ctxt, int Index) {
-                  return new Text(litems[Index]);
-                }
-            )
-        )
-        ],
-      )
-    );
+  void initState() {
+    for (int i = 0; i < session.playerList.length; i++) {
+      this._isCandidateSelected.add(false);
+    }
+    super.initState();
   }
 }
- */
