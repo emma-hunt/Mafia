@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import "package:mafia_app/session.dart" as session;
 
 class MafiaRevealPageArguments {
-  final int cardNumber;
+  int cardNumber;
 
   MafiaRevealPageArguments(this.cardNumber);
 }

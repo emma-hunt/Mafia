@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mafia_app/session.dart' as session;
 
-class ListRolesArguments{
-  final List<String> roles;
-  ListRolesArguments(this.roles);
-}
 
 class ListRolesPage extends StatefulWidget {
 
-  final ListRolesArguments _arguments;
-
-  ListRolesPage(this._arguments);
-
+  ListRolesPage();
 
   @override
   _ListRolesPageState createState() => _ListRolesPageState();
 }
 
 class _ListRolesPageState extends State<ListRolesPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(session.allRoles);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -53,8 +53,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => YourRolePage());
             break;
           case '/listRoles':
-            ListRolesArguments arguments = settings.arguments;
-            return MaterialPageRoute(builder: (context) => ListRolesPage(arguments));
+            return MaterialPageRoute(builder: (context) => ListRolesPage());
             break;
           case '/civilianRole':
             return MaterialPageRoute(builder: (context) => CivilianRolePage());
