@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mafia_app/yourRolePage.dart';
-import 'package:mafia_app/createJoinGame.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import "session.dart" as session;
 
 class CreateGameResponse {
   final String playerName;
@@ -41,9 +38,6 @@ class LobbyStateResponse {
 }
 
 class CreatorGameLobbyPage extends StatefulWidget {
-  final CreateGameArguments args;
-
-  CreatorGameLobbyPage({this.args});
 
   @override
   _CreatorGameLobbyPageState createState() => _CreatorGameLobbyPageState();
@@ -55,11 +49,14 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Timer timer;
 
   Future<CreateGameResponse> _fetchCreateGame() async {
-    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + widget.args.playerName);
+    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/' + session.playerName);
     if (response.statusCode == 200) {
       print(response.statusCode);
       print(response.body.toString());
       CreateGameResponse createGameResponse = CreateGameResponse.fromJson(json.decode(response.body));
+      session.playerID = json.decode(response.body)["hostId"];
+      session.gameID = json.decode(response.body)["gameId"];
+      session.playerName = json.decode(response.body)["hostName"];
       return createGameResponse;
     }
     else {
@@ -72,9 +69,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   Future<LobbyStateResponse> _checkLobbyState(CreateGameResponse createResponse) async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + createResponse.gameID);
     if (response.statusCode == 200) {
-      //print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
-      //print(lobbyState.playerList);
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page
         _startPlaying(lobbyState, createResponse);
@@ -96,16 +91,20 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   }
 
   void _startGamePost(String gameID, List<dynamic> playerList) async {
-    print("SENDING START GAME!!!!");
     List<String> roles = ["mafia", "mafia", "civilian"];
+
     for (int i = 0; i < playerList.length; i++) {
       roles.add("civilian");
     }
+
     String jsonRoles = jsonEncode(roles);
     String startBody = '{"roles": ' + jsonRoles + '}';
-    print(startBody);
     Map<String, String> headers = {"Content-type": "application/json"};
+
+    //recording playerList right before starting game...
+    session.playerList = playerList;
     final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/start/' + gameID, headers: headers, body: startBody);
+
     if (response.statusCode == 200) {
       print("startGame: " + response.statusCode.toString());
       print(response.body.toString());
@@ -118,8 +117,13 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
   }
 
   void _startPlaying(LobbyStateResponse lobbyState, CreateGameResponse createResponse) {
-    print("game has started");
-    Navigator.pushReplacementNamed(context, '/yourRolePage', arguments: YourRoleArguments(createResponse.playerName, createResponse.playerID, createResponse.gameID, lobbyState.playerList, true));
+
+    session.playerName = createResponse.playerName;
+    session.gameID = createResponse.gameID;
+    session.playerID = createResponse.playerID;
+    session.playerList = lobbyState.playerList;
+    session.isOwner = true;
+    Navigator.pushReplacementNamed(context, '/yourRolePage');
   }
 
   @override
@@ -130,7 +134,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
   @override
   void deactivate() {
-    print("IN DEACTIVATE");
     if(timer != null) {
       timer.cancel();
       timer = null;
@@ -140,7 +143,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
   @override
   void dispose() {
-    print("IN DISPOSE");
     if(timer != null) {
       timer.cancel();
       timer = null;
@@ -178,7 +180,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                           // this future builder is for the player list
                           future: lobbyStateResponse,
                           builder: (context, lobbyStateSnapshot) {
-                            Flexible players;
                             if (lobbyStateSnapshot.hasData) {
                               return Flexible (
                                 fit: FlexFit.loose,
@@ -221,7 +222,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                                   }
                                   else {
                                     Fluttertoast.showToast(
-                                      msg: "You must have 3+ players to start",
+                                      msg: "You must have 2+ players to start",
                                       toastLength: Toast.LENGTH_LONG,
                                       gravity: ToastGravity.CENTER,
                                     );
@@ -278,16 +279,15 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
 
 }
 
-void leaveGame(BuildContext context, String gameCode, String playerName) async {
-  final response = await http.delete('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/leave/' + gameCode + '/' + playerName);
-  if (response.statusCode == 200) {
-    print("leaveGame: " + response.statusCode.toString());
-    print(response.body.toString());
+void _leaveGame(BuildContext context) async {
+  final _response = await http.delete('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/leave/' + session.gameID + '/' + session.playerName);
+
+  if (_response.statusCode == 200) {
     Navigator.pushReplacementNamed(context, '/');
   }
   else {
-    print(response.statusCode);
-    print(response.body.toString());
+    print(_response.statusCode);
+    print(_response.body.toString());
     throw Exception('Unable to leave game');
   }
 }
@@ -309,9 +309,8 @@ class JoinGameResponse {
 }
 
 class JoinerGameLobbyPage extends StatefulWidget {
-  final JoinGameArguments args;
 
-  JoinerGameLobbyPage({this.args});
+  JoinerGameLobbyPage();
 
   @override
   _JoinerGameLobbyPageState createState() => _JoinerGameLobbyPageState();
@@ -323,12 +322,14 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
   Timer timer;
 
   Future<JoinGameResponse> _fetchJoinGame() async {
-    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/join/' + widget.args.gameCode + '/' + widget.args.playerName);
+    final response = await http.post('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/join/' + session.gameID + '/' + session.playerName);
     if (response.statusCode == 200) {
       print(response.body.toString());
       JoinGameResponse joinResponse = JoinGameResponse.fromJson(json.decode(response.body));
-      print(joinResponse.gameID);
-      print(joinResponse.playerName);
+
+      session.playerName = joinResponse.playerName;
+      session.gameID = joinResponse.gameID;
+      session.playerID = joinResponse.playerID;
       return joinResponse;
     }
     else {
@@ -340,10 +341,13 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
 
   Future<LobbyStateResponse> _checkLobbyState(JoinGameResponse joinResponse) async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + joinResponse.gameID);
+
     if (response.statusCode == 200) {
       print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
       print(lobbyState.playerList);
+
+      session.playerList = lobbyState.playerList;
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page
         _startPlaying(lobbyState, joinResponse);
@@ -366,7 +370,12 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
 
   void _startPlaying(LobbyStateResponse lobbyState, JoinGameResponse joinResponse) {
     print("game has started");
-    Navigator.pushReplacementNamed(context, '/yourRolePage', arguments: YourRoleArguments(joinResponse.playerName, joinResponse.playerID, joinResponse.gameID, lobbyState.playerList, false));
+    session.playerName = joinResponse.playerName;
+    session.playerID = joinResponse.playerID;
+    session.gameID = joinResponse.gameID;
+    session.playerList = lobbyState.playerList;
+    session.isOwner = false;
+    Navigator.pushReplacementNamed(context, '/yourRolePage');
   }
 
   @override
@@ -475,7 +484,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.CENTER,
                 );
-                leaveGame(context, widget.args.gameCode, widget.args.playerName);
+                _leaveGame(context);
               },
               child: Text('Leave Game'),
             ),
@@ -484,5 +493,4 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
       ),
     );
   }
-
 }

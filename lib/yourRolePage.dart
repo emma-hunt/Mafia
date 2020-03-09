@@ -1,20 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mafia_app/createJoinGame.dart';
-import 'package:mafia_app/listRoles.dart';
-
-class YourRoleArguments {
-  final String playerName;
-  final String playerID;
-  final String gameID;
-  final List<dynamic> playerList;
-  final bool isOwner;
-
-  YourRoleArguments(this.playerName, this.playerID, this.gameID, this.playerList, this.isOwner);
-}
+import 'package:mafia_app/session.dart' as session;
 
 class PlayerRoleResponse{
   final String role;
@@ -29,9 +16,8 @@ class PlayerRoleResponse{
 }
 
 class YourRolePage extends StatefulWidget {
-  final YourRoleArguments args;
 
-  YourRolePage({this.args});
+  YourRolePage();
 
   @override
   _YourRolePageState createState() => _YourRolePageState();
@@ -40,16 +26,20 @@ class YourRolePage extends StatefulWidget {
 
 class _YourRolePageState extends State<YourRolePage> {
   Future<PlayerRoleResponse> playerRole;
+  String _role;
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
-                                    + widget.args.gameID + '/' + widget.args.playerID);
+                                    + session.gameID + '/' + session.playerID);
     if (response.statusCode == 200) {
       print("YourRolePage: PlayerRole response code: " + response.statusCode.toString());
+      print("isOwner: " + session.isOwner.toString());
       print("YourRolePage: body: " + response.body.toString());
 
       PlayerRoleResponse playerRole = PlayerRoleResponse.fromJson(json.decode(response.body));
       print("YourRolePage: role: " + playerRole.role);
+      _role = playerRole.role;
+      session.allRoles = playerRole.allRoles;
 
       return playerRole;
     }
@@ -90,7 +80,7 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles', arguments: ListRolesArguments());
+                      Navigator.pushReplacementNamed(context, '/listRoles');
                       },
                     child: Text('Roles'),
                   ),
@@ -128,13 +118,19 @@ class _YourRolePageState extends State<YourRolePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Fluttertoast.showToast(
-                  msg: "take you to next screen",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                );
+                print("pressed: " + this._role);
+                switch (this._role) {
+                  case "mafia" :
+                    print("mafia switch");
+                    Navigator.pushReplacementNamed(context, '/mafiaRole');
+                    break;
+                  case "civilian" :
+                    print("civilian switch");
+                    Navigator.pushReplacementNamed(context, '/civilianRole');
+                    break;
+                }
               },
-              child: Text('time to sleep...'),
+              child: Text('Continue'),
               //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
             )
           ],

@@ -1,24 +1,23 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mafia_app/createJoinGame.dart';
+import 'package:mafia_app/session.dart' as session;
 
-class ListRolesArguments{
-  final String roles;
-  ListRolesArguments({this.roles});
-}
 
 class ListRolesPage extends StatefulWidget {
-  final ListRolesArguments args;
-  ListRolesPage({this.args});
+
+  ListRolesPage();
 
   @override
   _ListRolesPageState createState() => _ListRolesPageState();
 }
 
 class _ListRolesPageState extends State<ListRolesPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(session.allRoles);
+  }
 
   @override
   Widget build(BuildContext context) {
