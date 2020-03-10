@@ -25,9 +25,9 @@ class _VotePageState extends State<VotePage> {
           new Text('Cast your vote for whoever you want!'),
           Container(
             constraints: BoxConstraints(
-                maxHeight: 300.0,
+                maxHeight: MediaQuery.of(context).size.height * .6,
             ),
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * .20),
               child: new ListView.builder(
                   itemCount: this._otherPlayers.length,
                   itemBuilder: (BuildContext context, int index) {
