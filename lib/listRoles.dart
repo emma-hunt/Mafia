@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/session.dart' as session;
-
 
 class ListRolesPage extends StatefulWidget {
 
   ListRolesPage();
-
 
   @override
   _ListRolesPageState createState() => _ListRolesPageState();
@@ -16,9 +15,29 @@ class _ListRolesPageState extends State<ListRolesPage> {
   var roles = new List<String>();
 
   void createList(){
-    String tmpRole = session.allRoles[0];
+    List<dynamic> sortedRoles = session.allRoles;
+    //sortedRoles..sort((a, b) => a.toString().compareTo(b.toString()));
     int counter = 0;
+    String tmpRole = sortedRoles[0];
 
+    for(int i = 0; i < sortedRoles.length; i++){
+      String role = sortedRoles[i];
+      if(role != tmpRole || i == sortedRoles.length - 1){
+        if(i == sortedRoles.length - 1){
+          counter++;
+        }
+        //if(counter != 0){
+          this.roles.add( tmpRole + " x" + counter.toString());
+          tmpRole = role;
+          counter = 1;
+        //}
+      }
+      else{
+        counter++;
+      }
+    }
+
+/*
     for(int i = 0; i < session.allRoles.length; i++){
       String role = session.allRoles[i];
       if(role != tmpRole || i == session.allRoles.length - 1){
@@ -33,6 +52,7 @@ class _ListRolesPageState extends State<ListRolesPage> {
         counter++;
       }
     }
+    */
   }
 
   @override
@@ -72,7 +92,8 @@ class _ListRolesPageState extends State<ListRolesPage> {
                     ),
                   ],
                 ),
-                Column(children: <Widget>[ for(String role in this.roles) Text (role) ]),
+                Column(children: <Widget>[ for(String role in this.roles) Text(role )
+              ]),
                 RaisedButton(
                   onPressed: () {
                     Navigator.pop(context);

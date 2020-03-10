@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mafia_app/session.dart' as session;
+
+import 'listRoles.dart';
 
 class PlayerRoleResponse{
   final String role;
@@ -25,6 +28,7 @@ class YourRolePage extends StatefulWidget {
 class _YourRolePageState extends State<YourRolePage> {
   Future<PlayerRoleResponse> playerRole;
   String _role;
+  bool hasDataLoaded = false;
 
   Future<PlayerRoleResponse> fetchPlayerRole() async {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/role/'
@@ -38,7 +42,7 @@ class _YourRolePageState extends State<YourRolePage> {
       print("YourRolePage: role: " + playerRole.role);
       _role = playerRole.role;
       session.allRoles = playerRole.allRoles;
-
+      this.hasDataLoaded = true;
       return playerRole;
     }
     else {
@@ -77,7 +81,20 @@ class _YourRolePageState extends State<YourRolePage> {
                 Container(
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/listRoles');
+                      //Navigator.pushReplacementNamed(context, '/listRoles');
+                        if(this.hasDataLoaded){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ListRolesPage()),
+                            );
+                        }
+                        else{
+                          Fluttertoast.showToast(
+                                      msg: "the roles have not arrived yet",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                        }
                       },
                     child: Text('All Roles'),
                   ),
@@ -110,7 +127,7 @@ class _YourRolePageState extends State<YourRolePage> {
               ),
             ),
             Text(
-              "ROLE DESCIRPTION",
+              "ROLE DESCRIPTION",
               style: TextStyle(fontSize: 20.0),
             ),
             RaisedButton(
