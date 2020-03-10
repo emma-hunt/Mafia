@@ -209,7 +209,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                           future: lobbyStateResponse,
                           builder: (context, lobbyStateSnapshot) {
                             if (lobbyStateSnapshot.hasData) {
-                              print("has data");
                               return RaisedButton(
                                 onPressed: () {
                                   if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 2) {
@@ -343,10 +342,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + joinResponse.gameID);
 
     if (response.statusCode == 200) {
-      print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
-      print(lobbyState.playerList);
-
       session.playerList = lobbyState.playerList;
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page

@@ -24,12 +24,12 @@ class _SoloMafiaRolePageState extends State<SoloMafiaRolePage> {
       ),
       body: Container(
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
-              Container(
-                padding: EdgeInsets.all(50),
-                child: Text("You are the only mafia! Therefore you are priveledged with viewing one of the center cards! Choose one to continue"),
-              ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget> [
+            Container(
+              padding: EdgeInsets.all(50),
+              child: Text("You are the only mafia! Therefore you are priveledged with viewing one of the center cards! Choose one to continue"),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget> [
