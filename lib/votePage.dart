@@ -37,8 +37,24 @@ class _VotePageState extends State<VotePage> {
             disabledTextColor: Colors.black,
             padding: EdgeInsets.all(8.0),
             splashColor: Colors.redAccent[700],
-            onPressed: this._isAnyCandidateSelected() ? this.castVote : null,
+            onPressed: this._isAnyCandidateSelected() ? this._castVote : null,
             child: this._isAnyCandidateSelected() ? Text("Cast Vote") : Text("Select a player!"),
+          ),
+          FlatButton (
+            color: Colors.red[900],
+            textColor: Colors.white,
+            disabledColor: Colors.white,
+            disabledTextColor: Colors.black,
+            padding: EdgeInsets.all(8.0),
+            splashColor: Colors.redAccent[700],
+            onPressed: () {
+              Fluttertoast.showToast(
+                msg: "voted for no one.",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+              );
+            },
+            child: Text("Vote for no one"),
           )
         ]
       )
@@ -54,7 +70,7 @@ class _VotePageState extends State<VotePage> {
     return false;
   }
 
-  void castVote() {
+  void _castVote() {
     for (int i = 0; i < session.playerList.length; i++) {
       if (this._isCandidateSelected[i]) {
         Fluttertoast.showToast(
