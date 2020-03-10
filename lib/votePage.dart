@@ -12,6 +12,7 @@ class VotePage extends StatefulWidget {
 
 class _VotePageState extends State<VotePage> {
   List<bool> _isCandidateSelected = [];
+  List<String> _otherPlayers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,18 @@ class _VotePageState extends State<VotePage> {
       ),
       body: Column(
         children: <Widget>[
-          new Text('Cast your vote for who is a Mafia member!'),
-          new Expanded(
+          new Text('Cast your vote for whoever you want!'),
+          Container(
+            constraints: BoxConstraints(
+                maxHeight: 300.0,
+            ),
+            padding: EdgeInsets.all(50),
               child: new ListView.builder(
-                  itemCount: session.playerList.length,
+                  itemCount: this._otherPlayers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return _buildVoteButton(index);
                   }
-                )
+              )
           ),
           FlatButton (
             color: Colors.red[900],
@@ -48,11 +53,7 @@ class _VotePageState extends State<VotePage> {
             padding: EdgeInsets.all(8.0),
             splashColor: Colors.redAccent[700],
             onPressed: () {
-              Fluttertoast.showToast(
-                msg: "voted for no one.",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.CENTER,
-              );
+              Navigator.pushReplacementNamed(context, '/');
             },
             child: Text("Vote for no one"),
           )
@@ -62,7 +63,7 @@ class _VotePageState extends State<VotePage> {
   }
 
   bool _isAnyCandidateSelected() {
-    for (int index = 0; index < session.playerList.length; index++) {
+    for (int index = 0; index < this._otherPlayers.length; index++) {
       if (_isCandidateSelected[index]) {
         return true;
       }
@@ -71,13 +72,11 @@ class _VotePageState extends State<VotePage> {
   }
 
   void _castVote() {
-    for (int i = 0; i < session.playerList.length; i++) {
+    for (int i = 0; i < this._otherPlayers.length; i++) {
       if (this._isCandidateSelected[i]) {
-        Fluttertoast.showToast(
-          msg: session.playerList[i],
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-        );
+        String candidate = this._otherPlayers[i];
+        print("_castVote: will vote for " + candidate);
+        Navigator.pushReplacementNamed(context, '/');
         break;
       }
     }
@@ -91,14 +90,14 @@ class _VotePageState extends State<VotePage> {
       disabledTextColor: Colors.white,
       padding: EdgeInsets.all(8.0),
       onPressed: this._isCandidateSelected[index] ? null : () => _selectCandidate(index),
-      child: Text(session.playerList[index]), // plus 1 to convert card number from 0 based to 1 based
+      child: Text(this._otherPlayers[index]), // plus 1 to convert card number from 0 based to 1 based
     );
   }
 
 
   void _selectCandidate(int index) {
     setState(() {
-      for (int i = 0; i < session.playerList.length; i++) {
+      for (int i = 0; i < this._otherPlayers.length; i++) {
           this._isCandidateSelected[i] = false;
       }
       this._isCandidateSelected[index] = true;
@@ -108,7 +107,9 @@ class _VotePageState extends State<VotePage> {
   @override
   void initState() {
     for (int i = 0; i < session.playerList.length; i++) {
+      if (session.playerList[i] == session.playerName) continue;
       this._isCandidateSelected.add(false);
+      this._otherPlayers.add(session.playerList[i]);
     }
     super.initState();
   }
