@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mafia_app/voteLobbyPage.dart';
 import 'package:mafia_app/yourRolePage.dart';
 import 'package:mafia_app/listRoles.dart';
 import 'package:mafia_app/CivilianRole.dart';
@@ -68,6 +69,10 @@ class MyApp extends StatelessWidget {
             break;
           case '/dayPolling':
             return MaterialPageRoute(builder: (context) => DayPollingPage());
+            break;
+          case '/voteLobby':
+            VoteLobbyArguments arguments = settings.arguments;
+            return MaterialPageRoute(builder: (context) => VoteLobbyPage(arguments));
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));

@@ -7,6 +7,7 @@ String playerID = '';
 bool isOwner = false;
 List<dynamic> playerList = [];
 List<dynamic> allRoles = [];
+List<dynamic> playerIDList = [];
 
 void resetSession() {
   playerName = '';
@@ -15,4 +16,5 @@ void resetSession() {
   isOwner = false;
   playerList = [];
   allRoles = [];
+  playerIDList = [];
 }

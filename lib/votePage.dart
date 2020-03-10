@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mafia_app/session.dart' as session;
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mafia_app/voteLobbyPage.dart';
 
 
 class VotePage extends StatefulWidget {
@@ -13,6 +13,7 @@ class VotePage extends StatefulWidget {
 class _VotePageState extends State<VotePage> {
   List<bool> _isCandidateSelected = [];
   List<String> _otherPlayers = [];
+  List<String> _otherPlayersIDs = [];
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class _VotePageState extends State<VotePage> {
             disabledTextColor: Colors.black,
             padding: EdgeInsets.all(8.0),
             splashColor: Colors.redAccent[700],
-            onPressed: this._isAnyCandidateSelected() ? this._castVote : null,
+            onPressed: this._isAnyCandidateSelected() ? this._castVoteButtonPressed : null,
             child: this._isAnyCandidateSelected() ? Text("Cast Vote") : Text("Select a player!"),
           ),
           FlatButton (
@@ -53,7 +54,7 @@ class _VotePageState extends State<VotePage> {
             padding: EdgeInsets.all(8.0),
             splashColor: Colors.redAccent[700],
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/');
+              this._castVote("noone");
             },
             child: Text("Vote for no one"),
           )
@@ -71,12 +72,17 @@ class _VotePageState extends State<VotePage> {
     return false;
   }
 
-  void _castVote() {
+  void _castVote(String voteeID) {
+    VoteLobbyArguments arguments = VoteLobbyArguments(voteeID);
+    Navigator.pushReplacementNamed(context, '/voteLobby', arguments: arguments);
+  }
+
+  void _castVoteButtonPressed() {
     for (int i = 0; i < this._otherPlayers.length; i++) {
       if (this._isCandidateSelected[i]) {
-        String candidate = this._otherPlayers[i];
-        print("_castVote: will vote for " + candidate);
-        Navigator.pushReplacementNamed(context, '/');
+        String voteeID = this._otherPlayersIDs[i];
+        print("_castVote: will vote for " + voteeID);
+        this._castVote(voteeID);
         break;
       }
     }
@@ -110,6 +116,7 @@ class _VotePageState extends State<VotePage> {
       if (session.playerList[i] == session.playerName) continue;
       this._isCandidateSelected.add(false);
       this._otherPlayers.add(session.playerList[i]);
+      this._otherPlayersIDs.add(session.playerIDList[i]);
     }
     super.initState();
   }
