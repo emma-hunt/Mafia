@@ -213,8 +213,7 @@ class _DayPollingPageState extends State<DayPollingPage> {
   }
 
   void _moveToVoting() {
-    //TODO: reroute to voting page
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/vote');
   }
 
   @override

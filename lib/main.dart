@@ -126,21 +126,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 "Join Game",
               ),
             ),
-            FlatButton (
-              color: Colors.red[900],
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              padding: EdgeInsets.all(8.0),
-              splashColor: Colors.redAccent[700],
-              onPressed: () {
-                session.playerList = ["zack", "francois", "emma"];
-                Navigator.pushReplacementNamed(context, '/vote');
-              },
-              child: Text(
-                "Vote",
-              ),
-            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
