@@ -8,6 +8,7 @@ import 'yourRolePage.dart';
 import 'MafiaRolePages/mafiaRolePage.dart';
 import 'MafiaRolePages/soloMafiaRolePage.dart';
 import 'MafiaRolePages/mafiaRevealPage.dart';
+import 'dayNightPolling.dart';
 import 'package:mafia_app/session.dart' as session;
 
 void main() => runApp(MyApp());
@@ -57,6 +58,12 @@ class MyApp extends StatelessWidget {
             break;
           case '/civilianRole':
             return MaterialPageRoute(builder: (context) => CivilianRolePage());
+            break;
+          case '/nightPolling':
+            return MaterialPageRoute(builder: (context) => NightPollingPage());
+            break;
+          case '/dayPolling':
+            return MaterialPageRoute(builder: (context) => DayPollingPage());
             break;
           default:
             return MaterialPageRoute(builder: (context) => WelcomePage(title: 'Mafia:Evolved'));
