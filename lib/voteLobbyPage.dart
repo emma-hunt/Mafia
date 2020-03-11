@@ -137,7 +137,7 @@ class _VoteLobbyPageState extends State<VoteLobbyPage> {
               future: submitVoteResponse,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                  timer = Timer(Duration(seconds: 5), () => _pollVotingState());
+                  timer = Timer(Duration(seconds: 1), () => _pollVotingState());
                   return Container(
                     padding: EdgeInsets.all(50),
                     child: Text("Please wait for all players to vote. You will be moved forward once everyone is done."),

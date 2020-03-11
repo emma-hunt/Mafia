@@ -111,7 +111,7 @@ class _WelcomePageState extends State<WelcomePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/createGame');
+                Navigator.pushNamed(context, '/createGame');
               },
               child: Text(
                 "Create Game",
@@ -125,7 +125,7 @@ class _WelcomePageState extends State<WelcomePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/joinGame');
+                Navigator.pushNamed(context, '/joinGame');
               },
               child: Text(
                 "Join Game",
