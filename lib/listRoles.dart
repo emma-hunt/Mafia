@@ -16,7 +16,7 @@ class _ListRolesPageState extends State<ListRolesPage> {
 
   void createList(){
     List<dynamic> sortedRoles = session.allRoles;
-    //sortedRoles..sort((a, b) => a.toString().compareTo(b.toString()));
+    sortedRoles..sort((a, b) => a.toString().compareTo(b.toString()));
     int counter = 0;
     String tmpRole = sortedRoles[0];
 
