@@ -36,23 +36,6 @@ class _ListRolesPageState extends State<ListRolesPage> {
         counter++;
       }
     }
-
-/*
-    for(int i = 0; i < session.allRoles.length; i++){
-      String role = session.allRoles[i];
-      if(role != tmpRole || i == session.allRoles.length - 1){
-        if(i == session.allRoles.length - 1){
-          counter++;
-        }
-        this.roles.add( tmpRole + " x" + counter.toString());
-        tmpRole = role;
-        counter = 1;
-      }
-      else{
-        counter++;
-      }
-    }
-    */
   }
 
   @override
