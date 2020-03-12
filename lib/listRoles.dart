@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mafia_app/session.dart' as session;
-
 
 class ListRolesPage extends StatefulWidget {
 
@@ -12,11 +12,37 @@ class ListRolesPage extends StatefulWidget {
 }
 
 class _ListRolesPageState extends State<ListRolesPage> {
+  var roles = new List<String>();
+
+  void createList(){
+    List<dynamic> sortedRoles = session.allRoles;
+    sortedRoles..sort((a, b) => a.toString().compareTo(b.toString()));
+    int counter = 0;
+    String tmpRole = sortedRoles[0];
+
+    for(int i = 0; i < sortedRoles.length; i++){
+      String role = sortedRoles[i];
+      if(role != tmpRole || i == sortedRoles.length - 1){
+        if(i == sortedRoles.length - 1){
+          counter++;
+        }
+        //if(counter != 0){
+          this.roles.add( tmpRole + " x" + counter.toString());
+          tmpRole = role;
+          counter = 1;
+        //}
+      }
+      else{
+        counter++;
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     print(session.allRoles);
+    this.createList();
   }
 
   @override
@@ -34,8 +60,7 @@ class _ListRolesPageState extends State<ListRolesPage> {
                     Container(
                       child: RaisedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/yourRolePage');
+                          Navigator.pop(context);
                         },
                         child: Text('Your Role'),
                       ),
@@ -44,22 +69,19 @@ class _ListRolesPageState extends State<ListRolesPage> {
                       child: RaisedButton(
                         onPressed: () {
                           // Does nothing: stay on the same page
-                          //Navigator.pushReplacementNamed(context, '/listRoles');
                         },
-                        child: Text('Roles'),
+                        child: Text('All Roles'),
                       ),
                     ),
                   ],
                 ),
+                Column(children: <Widget>[ for(String role in this.roles) Text(role )
+              ]),
                 RaisedButton(
                   onPressed: () {
-                    Fluttertoast.showToast(
-                      msg: "take you to next screen",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                    );
-                  },
-                  child: Text('time to sleep...'),
+                    Navigator.pop(context);
+                  }, 
+                  child: Text('back to role'),
                   //padding : EdgeInsets.fromLTRB(0, 0, 0, 200)
                 )
               ]),

@@ -123,7 +123,7 @@ class _NightPollingPageState extends State<NightPollingPage> {
               future: actionCompleteResponse,
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                  timer = Timer(Duration(seconds: 5), () => _pollNightState());
+                  timer = Timer(Duration(seconds: 1), () => _pollNightState());
                   return Container(
                     padding: EdgeInsets.all(50),
                     child: Text("Please wait for other players to complete thier role action. You will be moved forward once everyone is done."),
@@ -236,7 +236,7 @@ class _DayPollingPageState extends State<DayPollingPage> {
 
   @override
   Widget build(BuildContext context) {
-    timer = Timer(Duration(seconds: 5), () => _pollDayState());
+    timer = Timer(Duration(seconds: 1), () => _pollDayState());
     if(session.isOwner) {
       return Scaffold(
         appBar: AppBar(

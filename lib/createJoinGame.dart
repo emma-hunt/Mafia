@@ -43,7 +43,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/creatorGameLobby');
+                  Navigator.pushNamedAndRemoveUntil(context, '/creatorGameLobby', (Route<dynamic> route) => false);
                 }
               },
               child: Text('Submit'),
@@ -124,7 +124,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                   );
                 }
                 else {
-                  Navigator.pushReplacementNamed(context, '/joinerGameLobby');
+                  Navigator.pushNamedAndRemoveUntil(context, '/joinerGameLobby', (Route<dynamic> route) => false);
                 }
               },
               child: Text('Submit'),

@@ -165,7 +165,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
               future: createGameResponse,
               builder: (context, createGameSnapshot) {
                 if (createGameSnapshot.hasData) {
-                  timer = Timer(Duration(seconds: 5), () => _pollLobbyState(createGameSnapshot.data));
+                  timer = Timer(Duration(seconds: 1), () => _pollLobbyState(createGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
@@ -416,7 +416,7 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
               future: joinGameResponse,
               builder: (context, joinGameSnapshot) {
                 if (joinGameSnapshot.hasData) {
-                  timer = Timer(Duration(seconds: 5), () => _pollLobbyState(joinGameSnapshot.data));
+                  timer = Timer(Duration(seconds: 1), () => _pollLobbyState(joinGameSnapshot.data));
                   return Container (
                     constraints: BoxConstraints(
                         maxHeight: 300.0,
