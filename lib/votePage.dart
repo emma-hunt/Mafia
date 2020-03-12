@@ -54,7 +54,7 @@ class _VotePageState extends State<VotePage> {
             padding: EdgeInsets.all(8.0),
             splashColor: Colors.redAccent[700],
             onPressed: () {
-              this._castVote("noone");
+              this._castVote("(present)");
             },
             child: Text("Vote for no one"),
           )
