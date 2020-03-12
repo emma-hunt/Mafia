@@ -46,7 +46,7 @@ class _MafiaRolePageState extends State<MafiaRolePage> {
       splashColor: Colors.redAccent[700],
       onPressed: () {
         // This will eventually route to the next part of the app. Not yet ready.
-        Navigator.pushReplacementNamed(context, '/');
+        Navigator.pushReplacementNamed(context, '/nightPolling');
       },
       child: Text(
         "Continue",

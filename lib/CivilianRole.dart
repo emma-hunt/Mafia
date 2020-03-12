@@ -29,7 +29,7 @@ class _CivilianRolePageState extends State<CivilianRolePage> {
               padding: EdgeInsets.all(8.0),
               splashColor: Colors.redAccent[700],
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/nightPolling');
               },
               child: Text(
                 "Continue",

@@ -70,6 +70,7 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + createResponse.gameID);
     if (response.statusCode == 200) {
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
+      session.playerIDList = json.decode(response.body)['playerIds'];
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page
         _startPlaying(lobbyState, createResponse);
@@ -98,9 +99,9 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
     }
 
     String jsonRoles = jsonEncode(roles);
-    String startBody = '{"roles": ' + jsonRoles + '}';
+    print("is playerID set yet?? ---> " + session.playerID);
+    String startBody = '{"roles": ' + jsonRoles + ', "playerId": ' + session.playerID + '}';
     Map<String, String> headers = {"Content-type": "application/json"};
-
     //recording playerList right before starting game...
     session.playerList = playerList;
     final response = await http.put('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/start/' + gameID, headers: headers, body: startBody);
@@ -209,7 +210,6 @@ class _CreatorGameLobbyPageState extends State<CreatorGameLobbyPage> {
                           future: lobbyStateResponse,
                           builder: (context, lobbyStateSnapshot) {
                             if (lobbyStateSnapshot.hasData) {
-                              print("has data");
                               return RaisedButton(
                                 onPressed: () {
                                   if (lobbyStateSnapshot.data.playerList != null && lobbyStateSnapshot.data.playerList.length >= 2) {
@@ -343,11 +343,9 @@ class _JoinerGameLobbyPageState extends State<JoinerGameLobbyPage> {
     final response = await http.get('https://0jdwp56wo2.execute-api.us-west-1.amazonaws.com/dev/game/status/' + joinResponse.gameID);
 
     if (response.statusCode == 200) {
-      print(response.body);
       LobbyStateResponse lobbyState = LobbyStateResponse.fromJson(json.decode(response.body));
-      print(lobbyState.playerList);
-
       session.playerList = lobbyState.playerList;
+      session.playerIDList = json.decode(response.body)["playerIds"];
       if(lobbyState.isGameStarted) {
         // game is started, time to move to the next page
         _startPlaying(lobbyState, joinResponse);
