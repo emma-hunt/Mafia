@@ -6,3 +6,5 @@ Mafia is an app designed for android and iOS, built using Flutter. The multiplay
 Contributors:
 Emma Hunt, 
 Zack Alger
+
+This project was cut short due to the Covid-19 pandemic as classes unexpectedly ended early.
